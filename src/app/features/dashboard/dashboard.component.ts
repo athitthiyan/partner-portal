@@ -1,0 +1,93 @@
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+import { PartnerService } from '../../core/services/partner.service';
+
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <section class="dashboard">
+      <div class="dashboard__hero">
+        <div>
+          <p class="dashboard__eyebrow">Revenue foundation</p>
+          <h2>Operate your hotel like a live marketplace partner</h2>
+          <p>Rates, occupancy, GST-ready details, payouts, and bookings are all connected now.</p>
+        </div>
+      </div>
+
+      <div class="dashboard__metrics">
+        @for (card of metricCards(); track card.label) {
+          <article class="dashboard__card">
+            <span>{{ card.label }}</span>
+            <strong>{{ card.value }}</strong>
+          </article>
+        }
+      </div>
+    </section>
+  `,
+  styles: [`
+    .dashboard { display: grid; gap: 18px; }
+    .dashboard__hero,
+    .dashboard__card {
+      border-radius: 22px;
+      border: 1px solid var(--pp-border);
+      background: linear-gradient(180deg, rgba(18, 31, 53, 0.96), rgba(15, 24, 40, 0.96));
+      padding: 20px;
+    }
+    .dashboard__eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--pp-primary);
+      font-size: 0.78rem;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .dashboard__hero h2 {
+      margin-bottom: 10px;
+      font-size: 1.7rem;
+    }
+    .dashboard__hero p:last-child,
+    .dashboard__card span {
+      color: var(--pp-text-muted);
+    }
+    .dashboard__metrics {
+      display: grid;
+      gap: 14px;
+    }
+    .dashboard__card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 2rem;
+    }
+    @media (min-width: 900px) {
+      .dashboard__metrics {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+  `],
+})
+export class DashboardComponent {
+  private partnerService = inject(PartnerService);
+
+  metricCards = toSignal(
+    this.partnerService.getRevenue().pipe(
+      map(revenue => [
+        { label: 'Gross revenue', value: `INR ${revenue.gross_revenue}` },
+        { label: 'Net revenue', value: `INR ${revenue.net_revenue}` },
+        { label: 'Confirmed bookings', value: String(revenue.confirmed_bookings) },
+        { label: 'Pending payouts', value: `INR ${revenue.pending_payouts}` },
+      ]),
+    ),
+    {
+      initialValue: [
+        { label: 'Gross revenue', value: 'INR 0' },
+        { label: 'Net revenue', value: 'INR 0' },
+        { label: 'Confirmed bookings', value: '0' },
+        { label: 'Pending payouts', value: 'INR 0' },
+      ],
+    },
+  );
+}
