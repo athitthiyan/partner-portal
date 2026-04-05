@@ -16,7 +16,7 @@ type PartnerRoomType = PartnerRoom['room_type'];
         <div>
           <p class="rooms__eyebrow">Inventory Setup</p>
           <h2>Room type and pricing management</h2>
-          <p>Define sellable room types, capacity, nightly pricing, and whether each type is live on StayEase.</p>
+          <p>Define sellable room types, capacity, nightly pricing, and whether each type is live on Stayvora.</p>
         </div>
       </header>
 

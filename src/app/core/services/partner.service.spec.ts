@@ -29,7 +29,7 @@ describe('PartnerService', () => {
   });
 
   it('updates the partner hotel profile', () => {
-    const payload = { display_name: 'StayEase Marina Suites', bank_account_number: '12345678' };
+    const payload = { display_name: 'Stayvora Marina Suites', bank_account_number: '12345678' };
 
     service.updateHotel(payload).subscribe();
 

@@ -11,7 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
   template: `
     <section class="register-page">
       <div class="register-card">
-        <h1>List your hotel on StayEase</h1>
+        <h1>List your hotel on Stayvora</h1>
         <p>Complete this first onboarding step to create your hotel partner workspace.</p>
 
         <form class="register-form" (ngSubmit)="register()">

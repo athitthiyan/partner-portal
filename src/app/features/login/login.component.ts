@@ -11,7 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
   template: `
     <section class="auth-page">
       <div class="auth-card">
-        <p class="auth-card__eyebrow">StayEase Partner Portal</p>
+        <p class="auth-card__eyebrow">Stayvora Partner Portal</p>
         <h1>Partner sign in</h1>
         <p class="auth-card__copy">Manage rates, occupancy, payouts, and live bookings from one mobile-ready workspace.</p>
 

@@ -11,13 +11,13 @@ import { AuthService } from '../../../core/services/auth.service';
       <div class="partner-header__brand">
         <button class="partner-header__menu" type="button" (click)="menuToggle.emit()" aria-label="Open navigation">|||</button>
         <div>
-          <h1>StayEase Partner Hub</h1>
-          <p>Operate inventory, bookings, payouts, and hotel trust in one place.</p>
+          <h1>Stayvora Partner Hub</h1>
+          <p>Stay Better. Travel Smarter. Operate inventory, bookings, payouts, and hotel trust in one place.</p>
         </div>
       </div>
 
       <div class="partner-header__actions">
-        <a class="partner-header__launch" href="https://stayease-booking-app.vercel.app/" target="_blank" rel="noreferrer">
+        <a class="partner-header__launch" href="https://stayvora.co.in/" target="_blank" rel="noreferrer">
           View customer app
         </a>
         <div class="partner-header__user">

@@ -20,7 +20,7 @@ describe('CalendarComponent', () => {
         rooms: [
           {
             id: 10,
-            hotel_name: 'StayEase Marina Suites',
+            hotel_name: 'Stayvora Marina Suites',
             room_type: 'suite',
             room_type_name: 'Suite',
             description: 'Sea-facing room',

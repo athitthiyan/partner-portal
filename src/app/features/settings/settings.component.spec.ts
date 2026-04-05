@@ -10,8 +10,8 @@ describe('SettingsComponent', () => {
   const getHotel = jest.fn(() => of<PartnerHotel>({
     id: 1,
     owner_user_id: 2,
-    legal_name: 'StayEase Hospitality Pvt Ltd',
-    display_name: 'StayEase Marina Suites',
+    legal_name: 'Stayvora Hospitality Pvt Ltd',
+    display_name: 'Stayvora Marina Suites',
     support_email: 'partner@example.com',
     support_phone: '+91 98765 43210',
     address_line: '12 Marina Beach Road',
@@ -25,7 +25,7 @@ describe('SettingsComponent', () => {
     verified_badge: true,
     payout_cycle: 'weekly',
     payout_currency: 'INR',
-    bank_account_name: 'StayEase Marina Suites',
+    bank_account_name: 'Stayvora Marina Suites',
     bank_ifsc: 'HDFC0001234',
     bank_upi_id: 'hotel@upi',
     created_at: '2026-04-05T00:00:00Z',
@@ -55,7 +55,7 @@ describe('SettingsComponent', () => {
   it('hydrates the settings form from the hotel profile', () => {
     const component = fixture.componentInstance;
 
-    expect(component.draft.display_name).toBe('StayEase Marina Suites');
+    expect(component.draft.display_name).toBe('Stayvora Marina Suites');
     expect(component.draft.support_email).toBe('partner@example.com');
     expect(component.draft.bank_ifsc).toBe('HDFC0001234');
   });
@@ -76,7 +76,7 @@ describe('SettingsComponent', () => {
     hotel$.next({
       id: 1,
       owner_user_id: 2,
-      legal_name: 'StayEase Hospitality Pvt Ltd',
+      legal_name: 'Stayvora Hospitality Pvt Ltd',
       display_name: 'Initial Name',
       support_email: 'partner@example.com',
       support_phone: '+91 98765 43210',
@@ -91,7 +91,7 @@ describe('SettingsComponent', () => {
       verified_badge: true,
       payout_cycle: 'weekly',
       payout_currency: 'INR',
-      bank_account_name: 'StayEase Marina Suites',
+      bank_account_name: 'Stayvora Marina Suites',
       bank_ifsc: 'HDFC0001234',
       bank_upi_id: 'hotel@upi',
       created_at: '2026-04-05T00:00:00Z',
@@ -130,8 +130,8 @@ describe('SettingsComponent', () => {
     getHotel.mockReturnValueOnce(of<PartnerHotel>({
       id: 1,
       owner_user_id: 2,
-      legal_name: 'StayEase Hospitality Pvt Ltd',
-      display_name: 'StayEase Marina Suites',
+      legal_name: 'Stayvora Hospitality Pvt Ltd',
+      display_name: 'Stayvora Marina Suites',
       support_email: 'partner@example.com',
       support_phone: null,
       address_line: '12 Marina Beach Road',

@@ -9,11 +9,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   template: `
     <aside class="sidebar" [class.sidebar--mobile-open]="mobileOpen" [class.sidebar--collapsed]="collapsed()">
       <div class="sidebar__head">
-        <div class="sidebar__logo">SE</div>
+        <div class="sidebar__logo">SV</div>
         @if (!collapsed()) {
           <div class="sidebar__title">
             <strong>Partner Portal</strong>
-            <span>StayEase</span>
+            <span>Stayvora</span>
           </div>
         }
         <button class="sidebar__toggle sidebar__toggle--desktop" type="button" (click)="toggleCollapsed()">
