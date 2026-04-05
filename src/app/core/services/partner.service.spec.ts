@@ -94,6 +94,15 @@ describe('PartnerService', () => {
     request.flush({ payouts: [], total: 0 });
   });
 
+  it('downloads the partner payout statement', () => {
+    service.downloadPayoutStatement().subscribe();
+
+    const request = http.expectOne(`${environment.apiUrl}/partner/payouts/statement`);
+    expect(request.request.method).toBe('GET');
+    expect(request.request.responseType).toBe('blob');
+    request.flush(new Blob(['payout_id,status'], { type: 'text/csv' }));
+  });
+
   it('gets calendar data for a specific room', () => {
     service.getCalendar(42, '2026-04-01').subscribe();
 

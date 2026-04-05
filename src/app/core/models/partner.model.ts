@@ -99,9 +99,10 @@ export interface PartnerPayout {
   commission_amount: number;
   net_amount: number;
   currency: string;
-  status: string;
+  status: 'pending' | 'processing' | 'settled' | 'failed' | 'reversed';
   payout_reference?: string | null;
   payout_date?: string | null;
+  statement_generated_at?: string | null;
   created_at: string;
 }
 

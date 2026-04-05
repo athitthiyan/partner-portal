@@ -55,6 +55,12 @@ export class PartnerService {
     return this.http.get<PartnerPayoutListResponse>(`${environment.apiUrl}/partner/payouts`);
   }
 
+  downloadPayoutStatement(): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/partner/payouts/statement`, {
+      responseType: 'blob',
+    });
+  }
+
   getCalendar(roomId: number, startDate?: string): Observable<PartnerCalendarResponse> {
     return this.http.get<PartnerCalendarResponse>(`${environment.apiUrl}/partner/calendar`, {
       params: startDate ? { room_type_id: roomId, start_date: startDate } : { room_type_id: roomId },
