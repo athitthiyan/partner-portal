@@ -32,10 +32,16 @@ export interface PartnerRoom {
   partner_hotel_id?: number | null;
   hotel_name: string;
   room_type: 'standard' | 'deluxe' | 'suite' | 'penthouse';
+  room_type_name: string;
   description?: string | null;
   price: number;
   original_price?: number | null;
+  total_room_count: number;
+  weekend_price?: number | null;
+  holiday_price?: number | null;
+  extra_guest_charge: number;
   availability: boolean;
+  is_active: boolean;
   image_url?: string | null;
   gallery_urls: string[];
   amenities: string[];
@@ -109,6 +115,12 @@ export interface PartnerCalendarDay {
   total_units: number;
   available_units: number;
   locked_units: number;
+  booked_units: number;
+  blocked_units: number;
+  effective_price: number;
+  block_reason?: string | null;
+  price_override?: number | null;
+  price_override_label?: string | null;
   status: string;
 }
 
@@ -116,4 +128,39 @@ export interface PartnerCalendarResponse {
   room_id: number;
   hotel_id: number;
   days: PartnerCalendarDay[];
+}
+
+export interface PartnerInventoryUpdateRequest {
+  room_type_id: number;
+  start_date: string;
+  end_date: string;
+  total_units?: number;
+  available_units?: number;
+  blocked_units?: number;
+  block_reason?: string;
+  status?: string;
+}
+
+export interface PartnerPricingCalendarDay {
+  date: string;
+  base_price: number;
+  weekend_price?: number | null;
+  holiday_price?: number | null;
+  effective_price: number;
+  override_price?: number | null;
+  override_label?: string | null;
+}
+
+export interface PartnerPricingCalendarResponse {
+  room_type_id: number;
+  hotel_id: number;
+  days: PartnerPricingCalendarDay[];
+}
+
+export interface PartnerPricingUpdateRequest {
+  room_type_id: number;
+  start_date: string;
+  end_date: string;
+  price: number;
+  label?: string;
 }
