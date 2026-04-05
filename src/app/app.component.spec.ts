@@ -75,6 +75,17 @@ describe('AppComponent', () => {
     expect(component.sidebarOpen()).toBe(false);
   });
 
+  it('toggles and closes the sidebar imperatively', () => {
+    fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    component.toggleSidebar();
+    expect(component.sidebarOpen()).toBe(true);
+
+    component.closeSidebar();
+    expect(component.sidebarOpen()).toBe(false);
+  });
+
   it('logs out when restoreSession errors', () => {
     authService.restoreSession.mockReturnValueOnce(
       throwError(() => new Error('restore failed'))

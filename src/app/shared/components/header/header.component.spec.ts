@@ -2,11 +2,12 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { PartnerUser } from '../../../core/models/auth.model';
 
 describe('HeaderComponent', () => {
   let fixture: ComponentFixture<HeaderComponent>;
   const authService = {
-    user: signal({
+    user: signal<PartnerUser | null>({
       id: 1,
       email: 'partner@example.com',
       full_name: 'Partner Owner',
@@ -38,5 +39,14 @@ describe('HeaderComponent', () => {
     (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.partner-header__logout')?.click();
 
     expect(authService.logout).toHaveBeenCalled();
+  });
+
+  it('falls back to the generic partner label when no user is loaded', () => {
+    authService.user.set(null);
+    fixture.detectChanges();
+
+    const native = fixture.nativeElement as HTMLElement;
+    expect(native.textContent).toContain('Partner');
+    expect(native.querySelector('.partner-header__avatar')?.textContent?.trim()).toBe('P');
   });
 });

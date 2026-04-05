@@ -6,7 +6,10 @@
     "stayease-partner-portal": {
       "projectType": "application",
       "schematics": {
-        "@schematics/angular:component": { "style": "scss", "standalone": true }
+        "@schematics/angular:component": {
+          "style": "scss",
+          "standalone": true
+        }
       },
       "root": "",
       "sourceRoot": "src",
@@ -18,17 +21,29 @@
             "outputPath": "dist/stayease-partner-portal",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
             "assets": [],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
             "production": {
               "budgets": [
-                { "type": "initial", "maximumWarning": "500kb", "maximumError": "1mb" },
-                { "type": "anyComponentStyle", "maximumWarning": "6kb", "maximumError": "8kb" }
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "8kb"
+                }
               ],
               "outputHashing": "all"
             },
@@ -43,15 +58,31 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": { "buildTarget": "stayease-partner-portal:build:production" },
-            "development": { "buildTarget": "stayease-partner-portal:build:development" }
+            "production": {
+              "buildTarget": "stayease-partner-portal:build:production"
+            },
+            "development": {
+              "buildTarget": "stayease-partner-portal:build:development"
+            }
           },
           "defaultConfiguration": "development"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": "44dfe99a-b294-49e7-aaca-9aef4f2667c0"
+    "analytics": "44dfe99a-b294-49e7-aaca-9aef4f2667c0",
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }
