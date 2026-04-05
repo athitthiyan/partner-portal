@@ -39,6 +39,7 @@ export interface PartnerRoom {
   image_url?: string | null;
   gallery_urls: string[];
   amenities: string[];
+  location?: string | null;
   city?: string | null;
   country?: string | null;
   max_guests: number;

@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { PartnerService } from '../../core/services/partner.service';
 import { PartnerRoom } from '../../core/models/partner.model';
 
+type PartnerRoomType = PartnerRoom['room_type'];
+
 @Component({
   selector: 'app-rooms',
   standalone: true,
@@ -96,7 +98,13 @@ export class RoomsComponent {
   total = signal(0);
   amenityInput = '';
   galleryInput = '';
-  draft = {
+  draft: {
+    room_type: PartnerRoomType;
+    description: string;
+    price: number;
+    original_price: number;
+    image_url: string;
+  } = {
     room_type: 'suite',
     description: '',
     price: 3500,
