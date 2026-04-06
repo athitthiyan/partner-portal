@@ -4,5 +4,7 @@ dist/
 coverage/
 playwright-report/
 test-results/
+.coverage
+coverage.xml
 .vercel/
 *.log
