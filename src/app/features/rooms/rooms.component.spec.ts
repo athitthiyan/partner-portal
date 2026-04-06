@@ -96,4 +96,22 @@ describe('RoomsComponent', () => {
     expect(updateRoom).toHaveBeenCalledWith(room.id, { is_active: false, availability: false });
     expect(deleteRoom).toHaveBeenCalledWith(room.id);
   });
+
+  it('handles editRoom with null optional fields using fallback defaults', () => {
+    const component = fixture.componentInstance;
+    const room = {
+      ...component.rooms()[0],
+      description: undefined,
+      original_price: undefined,
+      weekend_price: undefined,
+      holiday_price: undefined,
+    };
+
+    component.editRoom(room as never);
+
+    expect(component.draft.description).toBe('');
+    expect(component.draft.original_price).toBeNull();
+    expect(component.draft.weekend_price).toBeNull();
+    expect(component.draft.holiday_price).toBeNull();
+  });
 });

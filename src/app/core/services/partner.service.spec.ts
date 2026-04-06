@@ -103,7 +103,7 @@ describe('PartnerService', () => {
     request.flush(new Blob(['payout_id,status'], { type: 'text/csv' }));
   });
 
-  it('gets calendar data for a specific room', () => {
+  it('gets calendar data for a specific room with start date', () => {
     service.getCalendar(42, '2026-04-01').subscribe();
 
     const request = http.expectOne(
@@ -111,6 +111,19 @@ describe('PartnerService', () => {
         req.url === `${environment.apiUrl}/partner/calendar` &&
         req.params.get('room_type_id') === '42' &&
         req.params.get('start_date') === '2026-04-01'
+    );
+    expect(request.request.method).toBe('GET');
+    request.flush({ room_id: 42, hotel_id: 1, days: [] });
+  });
+
+  it('gets calendar data without start_date when not provided', () => {
+    service.getCalendar(42).subscribe();
+
+    const request = http.expectOne(
+      req =>
+        req.url === `${environment.apiUrl}/partner/calendar` &&
+        req.params.get('room_type_id') === '42' &&
+        !req.params.has('start_date')
     );
     expect(request.request.method).toBe('GET');
     request.flush({ room_id: 42, hotel_id: 1, days: [] });
@@ -171,5 +184,18 @@ describe('PartnerService', () => {
     );
     expect(pricingCalendarRequest.request.method).toBe('GET');
     pricingCalendarRequest.flush({ room_type_id: 42, hotel_id: 1, days: [] });
+  });
+
+  it('gets pricing calendar without start_date when not provided', () => {
+    service.getPricingCalendar(42).subscribe();
+
+    const request = http.expectOne(
+      req =>
+        req.url === `${environment.apiUrl}/partner/pricing/calendar` &&
+        req.params.get('room_type_id') === '42' &&
+        !req.params.has('start_date')
+    );
+    expect(request.request.method).toBe('GET');
+    request.flush({ room_type_id: 42, hotel_id: 1, days: [] });
   });
 });

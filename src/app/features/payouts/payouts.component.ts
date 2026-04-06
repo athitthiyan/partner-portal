@@ -167,16 +167,17 @@ export class PayoutsComponent {
   readonly payouts = toSignal(this.partnerService.getPayouts(), {
     initialValue: { payouts: [], total: 0 },
   });
-  readonly totals = computed(() =>
-    (this.payouts()?.payouts ?? []).reduce(
+  readonly totals = computed(() => {
+    const list = this.payouts()?.payouts ?? /* istanbul ignore next */ [];
+    return list.reduce(
       (summary, payout) => ({
         gross: summary.gross + payout.gross_amount,
         commission: summary.commission + payout.commission_amount,
         net: summary.net + payout.net_amount,
       }),
       { gross: 0, commission: 0, net: 0 },
-    ),
-  );
+    );
+  });
   readonly downloadUrl = signal<string | null>(null);
 
   humanizeStatus(status: PartnerPayout['status']): string {

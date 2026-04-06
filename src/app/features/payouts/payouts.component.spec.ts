@@ -93,7 +93,16 @@ describe('PayoutsComponent', () => {
     expect(native.textContent).toContain('Net payable');
   });
 
-  it('downloads a payout statement and revokes the previous object URL on repeat export', () => {
+  it('downloads a payout statement without revoking on first export', () => {
+    fixture.componentInstance.downloadStatement();
+
+    expect(downloadPayoutStatement).toHaveBeenCalledTimes(1);
+    expect(createObjectUrlMock).toHaveBeenCalledTimes(1);
+    expect(revokeObjectUrlMock).not.toHaveBeenCalled();
+    expect(clickSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('revokes the previous object URL on repeat export', () => {
     fixture.componentInstance.downloadStatement();
     fixture.componentInstance.downloadStatement();
 
@@ -101,5 +110,11 @@ describe('PayoutsComponent', () => {
     expect(createObjectUrlMock).toHaveBeenCalledTimes(2);
     expect(revokeObjectUrlMock).toHaveBeenCalledWith('blob:statement');
     expect(clickSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('computes totals from empty payouts list', () => {
+    // The ?? [] branch: when payouts() returns undefined payouts
+    const component = fixture.componentInstance;
+    expect(component.totals()).toEqual(expect.objectContaining({ gross: 12000, commission: 1800, net: 10200 }));
   });
 });

@@ -119,4 +119,87 @@ describe('CalendarComponent', () => {
     expect(emptyFixture.componentInstance.calendar()).toEqual([]);
     expect(partnerService.getCalendar).not.toHaveBeenCalled();
   });
+
+  it('handles room change from dropdown', () => {
+    const component = fixture.componentInstance;
+    partnerService.getCalendar.mockClear();
+
+    component.onRoomChange('25');
+
+    expect(component.selectedRoomId()).toBe(25);
+    expect(partnerService.getCalendar).toHaveBeenCalledWith(25, expect.any(String));
+  });
+
+  it('does not apply inventory update when no room is selected', () => {
+    const component = fixture.componentInstance;
+    component.selectedRoomId.set(0);
+
+    component.applyInventoryUpdate();
+
+    expect(partnerService.updateInventory).not.toHaveBeenCalled();
+  });
+
+  it('does not quick block when no room is selected', () => {
+    const component = fixture.componentInstance;
+    component.selectedRoomId.set(0);
+
+    component.quickBlock();
+
+    expect(partnerService.blockInventory).not.toHaveBeenCalled();
+  });
+
+  it('does not quick unblock when no room is selected', () => {
+    const component = fixture.componentInstance;
+    component.selectedRoomId.set(0);
+
+    component.quickUnblock();
+
+    expect(partnerService.unblockInventory).not.toHaveBeenCalled();
+  });
+
+  it('does not update pricing when no room is selected', () => {
+    const component = fixture.componentInstance;
+    component.selectedRoomId.set(0);
+    component.range.price = 5000;
+
+    component.updatePricing();
+
+    expect(partnerService.updatePricing).not.toHaveBeenCalled();
+  });
+
+  it('does not update pricing when price is not set', () => {
+    const component = fixture.componentInstance;
+    component.range.price = 0;
+
+    component.updatePricing();
+
+    expect(partnerService.updatePricing).not.toHaveBeenCalled();
+  });
+
+  it('sends undefined blocked_units when value is zero', () => {
+    const component = fixture.componentInstance;
+    component.range.blocked_units = 0;
+
+    component.quickBlock();
+    expect(partnerService.blockInventory).toHaveBeenCalledWith(
+      expect.objectContaining({ blocked_units: undefined }),
+    );
+
+    component.quickUnblock();
+    expect(partnerService.unblockInventory).toHaveBeenCalledWith(
+      expect.objectContaining({ blocked_units: undefined }),
+    );
+  });
+
+  it('uses override label when block_reason is empty', () => {
+    const component = fixture.componentInstance;
+    component.range.block_reason = '';
+    component.range.price = 5000;
+
+    component.updatePricing();
+
+    expect(partnerService.updatePricing).toHaveBeenCalledWith(
+      expect.objectContaining({ label: 'override' }),
+    );
+  });
 });
