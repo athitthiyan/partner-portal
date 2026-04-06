@@ -16,7 +16,7 @@ import { AuthService } from '../../core/services/auth.service';
         <p class="auth-card__copy">Manage rates, occupancy, payouts, and live bookings from one mobile-ready workspace.</p>
 
         <form class="auth-form" (ngSubmit)="login()">
-          <input type="email" name="email" [(ngModel)]="email" placeholder="partner@example.com" [disabled]="loading()" required />
+          <input type="email" name="email" [(ngModel)]="email" placeholder="reservations@yourhotel.com" [disabled]="loading()" required />
           <input type="password" name="password" [(ngModel)]="password" placeholder="Password" [disabled]="loading()" required />
           @if (error()) { <div class="auth-error">{{ error() }}</div> }
           <button type="submit" [disabled]="loading()">{{ loading() ? 'Signing in...' : 'Continue to partner hub' }}</button>

@@ -45,7 +45,7 @@ import { PartnerService } from '../../core/services/partner.service';
                   {{ humanizeStatus(payout.status) }}
                 </span>
               </div>
-              <p>Booking #{{ payout.booking_id || 'portfolio settlement' }}</p>
+              <p>Booking #{{ payout.booking_id || 'Settlement pending booking assignment' }}</p>
               <p>Settlement date: {{ payout.payout_date ? formatDate(payout.payout_date) : 'Awaiting finance release' }}</p>
               <p>Statement generated: {{ payout.statement_generated_at ? formatDate(payout.statement_generated_at) : 'Not yet exported' }}</p>
             </div>
