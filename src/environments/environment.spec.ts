@@ -12,4 +12,9 @@ describe('partner environments', () => {
 
   it('exports the production environment config', () => {
     expect(prodEnvironment.production).toBe(true);
-    expect(prodEnvironment.apiUrl).toBe('https://hotel-api-prod
+    expect(prodEnvironment.apiUrl).toBe('https://hotel-api-production-447d.up.railway.app');
+    expect(prodEnvironment.apiBaseUrl).toBe('https://hotel-api-production-447d.up.railway.app');
+    expect(prodEnvironment.bookingAppUrl).toBe('https://stayvora.co.in');
+    expect(prodEnvironment.partnerPortalUrl).toBe('https://partner-portal.vercel.app');
+  });
+});
