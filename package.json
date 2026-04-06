@@ -1,7 +1,7 @@
 {
-  "name": "stayease-partner-portal",
+  "name": "stayvora-partner-portal",
   "version": "1.0.0",
-  "description": "StayEase Partner Portal",
+  "description": "Stayvora Partner Portal",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4203",
