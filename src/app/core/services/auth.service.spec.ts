@@ -177,6 +177,11 @@ describe('Partner AuthService', () => {
       is_active: true,
     });
 
+    // Flush the fire-and-forget logout POST triggered by non-partner detection
+    const logoutReq = http.expectOne(`${environment.apiUrl}/auth/logout`);
+    expect(logoutReq.request.method).toBe('POST');
+    logoutReq.flush({ message: 'Logged out successfully' });
+
     expect(service.isAuthenticated()).toBe(false);
     expect(localStorage.getItem('partner_portal_access_token')).toBeNull();
     expect(router.navigate).not.toHaveBeenCalled();
