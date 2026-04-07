@@ -36,7 +36,7 @@ import { PartnerService } from '../../core/services/partner.service';
       </section>
 
       <div class="payouts__list">
-        @for (payout of payouts()?.payouts ?? []; track payout.id) {
+        @for (payout of payouts().payouts; track payout.id) {
           <article class="payouts__item">
             <div class="payouts__primary">
               <div class="payouts__title-row">
@@ -168,7 +168,7 @@ export class PayoutsComponent {
     initialValue: { payouts: [], total: 0 },
   });
   readonly totals = computed(() => {
-    const list = this.payouts()?.payouts ?? /* istanbul ignore next */ [];
+    const list = this.payouts().payouts;
     return list.reduce(
       (summary, payout) => ({
         gross: summary.gross + payout.gross_amount,
