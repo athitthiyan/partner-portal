@@ -75,11 +75,11 @@ import { PartnerService } from '../../core/services/partner.service';
       align-items: flex-start;
       flex-wrap: wrap;
     }
-    .payouts__header p { color: var(--pp-text-muted); margin-top: 6px; max-width: 60ch; }
+    .payouts__header p { color: var(--sv-text-muted); margin-top: 6px; max-width: 60ch; }
     .payouts__action {
       border: 1px solid rgba(214, 185, 96, 0.45);
       background: linear-gradient(135deg, rgba(214, 185, 96, 0.18), rgba(214, 185, 96, 0.06));
-      color: var(--pp-text);
+      color: var(--sv-text);
       border-radius: 999px;
       padding: 10px 16px;
       font: inherit;
@@ -95,8 +95,8 @@ import { PartnerService } from '../../core/services/partner.service';
     .payouts__item,
     .payouts__empty {
       border-radius: 18px;
-      border: 1px solid var(--pp-border);
-      background: var(--pp-surface);
+      border: 1px solid var(--sv-border);
+      background: var(--sv-surface);
       box-shadow: 0 16px 30px rgba(5, 11, 28, 0.18);
     }
     .payouts__summary article {
@@ -107,7 +107,7 @@ import { PartnerService } from '../../core/services/partner.service';
     .payouts__summary span,
     .payouts__item p,
     .payouts__empty p {
-      color: var(--pp-text-muted);
+      color: var(--sv-text-muted);
     }
     .payouts__list { display: grid; gap: 12px; }
     .payouts__item {

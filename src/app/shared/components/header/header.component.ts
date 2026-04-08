@@ -43,7 +43,7 @@ import { AuthService } from '../../../core/services/auth.service';
       padding: 16px;
       background: rgba(9, 16, 28, 0.92);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--pp-border);
+      border-bottom: 1px solid var(--sv-border);
       flex-wrap: wrap;
     }
 
@@ -57,9 +57,9 @@ import { AuthService } from '../../../core/services/auth.service';
     .partner-header__logout,
     .partner-header__launch {
       border-radius: 12px;
-      border: 1px solid var(--pp-border);
-      background: var(--pp-surface);
-      color: var(--pp-text);
+      border: 1px solid var(--sv-border);
+      background: var(--sv-surface);
+      color: var(--sv-text);
       padding: 10px 14px;
     }
 
@@ -75,7 +75,7 @@ import { AuthService } from '../../../core/services/auth.service';
     }
 
     .partner-header__brand p {
-      color: var(--pp-text-muted);
+      color: var(--sv-text-muted);
       font-size: 0.9rem;
       max-width: 620px;
     }
@@ -94,15 +94,15 @@ import { AuthService } from '../../../core/services/auth.service';
       gap: 10px;
       padding: 6px 10px;
       border-radius: 14px;
-      background: var(--pp-surface);
-      border: 1px solid var(--pp-border);
+      background: var(--sv-surface);
+      border: 1px solid var(--sv-border);
     }
 
     .partner-header__avatar {
       width: 34px;
       height: 34px;
       border-radius: 10px;
-      background: linear-gradient(135deg, var(--pp-primary), var(--pp-primary-2));
+      background: var(--sv-gradient-gold);
       color: #0f172a;
       display: inline-flex;
       align-items: center;
@@ -112,7 +112,7 @@ import { AuthService } from '../../../core/services/auth.service';
 
     .partner-header__user div span {
       display: block;
-      color: var(--pp-text-muted);
+      color: var(--sv-text-muted);
       font-size: 0.8rem;
     }
 

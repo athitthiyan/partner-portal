@@ -93,10 +93,18 @@ type PartnerRoomType = PartnerRoom['room_type'];
           <textarea name="description" [(ngModel)]="draft.description" placeholder="Ocean-view suite with balcony"></textarea>
         </label>
 
-        <label>
-          Amenities
-          <input name="amenities" [(ngModel)]="amenityInput" placeholder="WiFi, Breakfast, Pool" />
-        </label>
+        <div class="rooms__amenities">
+          <label for="custom-amenity-input">Amenities</label>
+          <div class="rooms__amenity-grid">
+            @for (amenity of allAmenities; track amenity) {
+              <label class="rooms__amenity-chip" [class.rooms__amenity-chip--selected]="selectedAmenities().has(amenity)">
+                <input type="checkbox" [checked]="selectedAmenities().has(amenity)" (change)="toggleAmenity(amenity)" />
+                <span>{{ amenity }}</span>
+              </label>
+            }
+          </div>
+          <input id="custom-amenity-input" name="custom_amenity" [(ngModel)]="customAmenity" placeholder="Add custom amenity and press Enter" (keydown.enter)="addCustomAmenity($event)" class="rooms__custom-amenity" />
+        </div>
 
         <div class="rooms__actions">
           <button type="submit">{{ editingId() ? 'Update room type' : 'Create room type' }}</button>
@@ -144,18 +152,18 @@ type PartnerRoomType = PartnerRoom['room_type'];
     .rooms { display: grid; gap: 20px; }
     .rooms__eyebrow {
       margin: 0 0 8px;
-      color: var(--pp-primary);
+      color: var(--sv-gold);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       font-size: 0.8rem;
       font-weight: 700;
     }
-    .rooms__head p:last-child { color: var(--pp-text-muted); margin-top: 6px; }
+    .rooms__head p:last-child { color: var(--sv-text-muted); margin-top: 6px; }
     .rooms__form,
     .rooms__card {
       border-radius: 24px;
-      border: 1px solid var(--pp-border);
-      background: linear-gradient(180deg, var(--pp-surface), rgba(17, 25, 40, 0.92));
+      border: 1px solid var(--sv-border);
+      background: linear-gradient(180deg, var(--sv-surface), rgba(17, 25, 40, 0.92));
       padding: 20px;
       box-shadow: 0 16px 34px rgba(4, 9, 18, 0.22);
     }
@@ -167,7 +175,7 @@ type PartnerRoomType = PartnerRoom['room_type'];
     label {
       display: grid;
       gap: 8px;
-      color: var(--pp-text-muted);
+      color: var(--sv-text-muted);
       font-size: 0.92rem;
     }
     input,
@@ -177,9 +185,9 @@ type PartnerRoomType = PartnerRoom['room_type'];
       width: 100%;
       padding: 12px 14px;
       border-radius: 14px;
-      border: 1px solid var(--pp-border);
-      background: var(--pp-surface-2);
-      color: var(--pp-text);
+      border: 1px solid var(--sv-border);
+      background: var(--sv-surface-2);
+      color: var(--sv-text);
     }
     textarea { min-height: 96px; resize: vertical; }
     .rooms__toggle {
@@ -206,7 +214,7 @@ type PartnerRoomType = PartnerRoom['room_type'];
       font-weight: 700;
     }
     .rooms__actions button:first-child {
-      background: linear-gradient(135deg, var(--pp-primary), var(--pp-primary-2));
+      background: var(--sv-gradient-gold);
       color: #111722;
       border: none;
     }
@@ -235,8 +243,8 @@ type PartnerRoomType = PartnerRoom['room_type'];
       width: fit-content;
       padding: 8px 12px;
       border-radius: 999px;
-      background: rgba(212, 184, 93, 0.12);
-      color: var(--pp-primary);
+      background: rgba(214, 184, 107, 0.12);
+      color: var(--sv-gold);
       font-weight: 700;
     }
     .rooms__status {
@@ -260,17 +268,106 @@ type PartnerRoomType = PartnerRoom['room_type'];
       background: rgba(255, 255, 255, 0.03);
     }
     .rooms__facts dt {
-      color: var(--pp-text-muted);
+      color: var(--sv-text-muted);
       font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
     .rooms__facts dd {
       margin: 6px 0 0;
-      color: var(--pp-text);
+      color: var(--sv-text);
       font-weight: 700;
     }
-    .rooms__description { color: var(--pp-text-muted); }
+    .rooms__description { color: var(--sv-text-muted); }
+
+    .rooms__amenities {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .rooms__amenity-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .rooms__amenity-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--sv-border);
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .rooms__amenity-chip input {
+      width: 0;
+      height: 0;
+      opacity: 0;
+      position: absolute;
+      padding: 0;
+    }
+    .rooms__amenity-chip:hover {
+      border-color: rgba(214, 184, 107, 0.4);
+      background: rgba(214, 184, 107, 0.06);
+    }
+    .rooms__amenity-chip--selected {
+      border-color: rgba(214, 184, 107, 0.5);
+      background: rgba(214, 184, 107, 0.15);
+      color: var(--sv-gold-light, #f0d58f);
+    }
+    .rooms__custom-amenity {
+      max-width: 320px;
+    }
+
+    /* Tablet (768–900px) */
+    @media (min-width: 768px) and (max-width: 900px) {
+      .rooms__grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+      .rooms__cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Mobile (<768px) */
+    @media (max-width: 767px) {
+      .rooms__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .rooms__cards {
+        grid-template-columns: 1fr;
+      }
+      .rooms__form,
+      .rooms__card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+      .rooms__facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* Small mobile (<480px) */
+    @media (max-width: 480px) {
+      .rooms__grid {
+        grid-template-columns: 1fr;
+      }
+      .rooms__form,
+      .rooms__card {
+        padding: 14px;
+        border-radius: 16px;
+      }
+      .rooms__actions button,
+      .rooms__card-actions button {
+        min-width: 100px;
+        font-size: 0.82rem;
+      }
+    }
   `],
 })
 export class RoomsComponent {
@@ -279,17 +376,49 @@ export class RoomsComponent {
   rooms = signal<PartnerRoom[]>([]);
   total = signal(0);
   editingId = signal<number | null>(null);
-  amenityInput = '';
+  customAmenity = '';
+  selectedAmenities = signal<Set<string>>(new Set());
   draft = this.createDraft();
+
+  readonly allAmenities = [
+    'WiFi', 'Breakfast', 'Pool', 'Gym', 'Spa', 'Parking', 'Room Service',
+    'Air Conditioning', 'TV', 'Mini Bar', 'Balcony', 'Sea View', 'Laundry',
+    'Coffee Maker', 'Safe', 'Bathtub', 'Shower', 'Hair Dryer', 'Iron',
+    'Desk', 'Kitchen', 'Refrigerator', 'Microwave',
+  ];
 
   constructor() {
     this.loadRooms();
   }
 
+  toggleAmenity(amenity: string): void {
+    this.selectedAmenities.update(current => {
+      const next = new Set(current);
+      if (next.has(amenity)) {
+        next.delete(amenity);
+      } else {
+        next.add(amenity);
+      }
+      return next;
+    });
+  }
+
+  addCustomAmenity(event: Event): void {
+    event.preventDefault();
+    const value = this.customAmenity.trim();
+    if (value && !this.selectedAmenities().has(value)) {
+      this.selectedAmenities.update(current => new Set(current).add(value));
+      if (!this.allAmenities.includes(value)) {
+        (this.allAmenities as string[]).push(value);
+      }
+    }
+    this.customAmenity = '';
+  }
+
   saveRoomType() {
     const payload = {
       ...this.draft,
-      amenities: this.amenityInput.split(',').map(value => value.trim()).filter(Boolean),
+      amenities: Array.from(this.selectedAmenities()),
       gallery_urls: [],
       location: 'Partner-managed location',
       city: 'Chennai',
@@ -307,7 +436,7 @@ export class RoomsComponent {
 
   editRoom(room: PartnerRoom) {
     this.editingId.set(room.id);
-    this.amenityInput = room.amenities.join(', ');
+    this.selectedAmenities.set(new Set(room.amenities));
     this.draft = {
       room_type: room.room_type,
       room_type_name: room.room_type_name,
@@ -339,7 +468,8 @@ export class RoomsComponent {
 
   resetDraft() {
     this.editingId.set(null);
-    this.amenityInput = '';
+    this.selectedAmenities.set(new Set());
+    this.customAmenity = '';
     this.draft = this.createDraft();
   }
 

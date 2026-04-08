@@ -78,6 +78,20 @@ describe('PartnerService', () => {
     request.flush({ bookings: [], total: 0 });
   });
 
+  it('accepts and rejects partner bookings', () => {
+    service.acceptBooking(42).subscribe();
+    const acceptRequest = http.expectOne(`${environment.apiUrl}/partner/bookings/42/accept`);
+    expect(acceptRequest.request.method).toBe('POST');
+    expect(acceptRequest.request.body).toEqual({});
+    acceptRequest.flush({ id: 42, status: 'confirmed', message: 'accepted' });
+
+    service.rejectBooking(42).subscribe();
+    const rejectRequest = http.expectOne(`${environment.apiUrl}/partner/bookings/42/reject`);
+    expect(rejectRequest.request.method).toBe('POST');
+    expect(rejectRequest.request.body).toEqual({});
+    rejectRequest.flush({ id: 42, status: 'cancelled', refund_initiated: true, message: 'rejected' });
+  });
+
   it('gets partner revenue summary', () => {
     service.getRevenue().subscribe();
 

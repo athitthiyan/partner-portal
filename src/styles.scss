@@ -1,40 +1,59 @@
 :root {
-  --pp-bg: #08131b;
-  --pp-surface: #122230;
-  --pp-surface-2: #193143;
-  --pp-border: rgba(148, 163, 184, 0.18);
-  --pp-text: #e2e8f0;
-  --pp-text-muted: #9fb0c8;
-  --pp-primary: #d6b86b;
-  --pp-primary-2: #f0d58f;
-  --pp-accent: #63c7d4;
+  --sv-bg: #071119;
+  --sv-bg-2: #0b1622;
+  --sv-bg-3: #122538;
+  --sv-surface: #162435;
+  --sv-surface-2: #1b2d44;
+  --sv-border: rgba(255, 255, 255, 0.07);
+  --sv-border-light: rgba(255, 255, 255, 0.12);
+  --sv-text: #f0f4ff;
+  --sv-text-muted: #8a9bbf;
+  --sv-text-subtle: #4e5e7a;
+  --sv-gold: #d6b86b;
+  --sv-gold-light: #f0d58f;
+  --sv-gold-dark: #a7843c;
+  --sv-accent: #63c7d4;
+  --sv-gradient-gold: linear-gradient(135deg, #d6b86b 0%, #f0d58f 48%, #c89f4f 100%);
+  --sv-success:        #22c55e;
+  --sv-warning:        #f59e0b;
+  --sv-error:          #ef4444;
+  --sv-glow-gold:      0 0 40px rgba(214,184,107,0.2);
+  --sv-shadow:         0 20px 60px rgba(0,0,0,0.5);
+  --sv-font-serif:     'Playfair Display', Georgia, serif;
+  --sv-font-mono:      'JetBrains Mono', monospace;
+  --sv-space-sm:       8px;
+  --sv-space-md:       16px;
+  --sv-space-lg:       24px;
+  --sv-space-xl:       32px;
   --sidebar-width: 280px;
-  font-family: "Segoe UI", system-ui, sans-serif;
+
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
+  padding: 0;
 }
+
+html { scroll-behavior: smooth; }
 
 html, body {
   min-height: 100%;
   background:
-    radial-gradient(circle at top left, rgba(99, 199, 212, 0.11), transparent 26%),
-    radial-gradient(circle at bottom right, rgba(214, 184, 107, 0.10), transparent 24%),
-    var(--pp-bg);
-  color: var(--pp-text);
+    radial-gradient(circle at top left, rgba(99, 199, 212, 0.08), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(214, 184, 107, 0.08), transparent 24%),
+    var(--sv-bg);
+  color: var(--sv-text);
+  -webkit-font-smoothing: antialiased;
 }
 
-body {
-  overflow-x: hidden;
-}
+body { overflow-x: hidden; }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; cursor: pointer; border: none; outline: none; }
 
-button, input, select, textarea {
-  font: inherit;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--sv-bg-2); }
+::-webkit-scrollbar-thumb { background: var(--sv-surface); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sv-gold-dark); }

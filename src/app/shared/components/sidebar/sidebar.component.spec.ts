@@ -21,12 +21,12 @@ describe('SidebarComponent', () => {
     ).map(link => link.textContent?.trim());
 
     expect(labels).toEqual(expect.arrayContaining([
-      'OVOverview',
-      'RMRooms',
-      'BKBookings',
-      'CLCalendar',
-      'POPayouts',
-      'STSettings',
+      '⌂Overview',
+      '☖Rooms',
+      '☑Bookings',
+      '☷Calendar',
+      '₹Payouts',
+      '⚙Settings',
     ]));
   });
 

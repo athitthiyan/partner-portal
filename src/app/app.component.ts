@@ -39,7 +39,7 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
       min-height: 100vh;
       display: flex;
       position: relative;
-      background: var(--pp-bg);
+      background: var(--sv-bg);
     }
 
     .partner-layout__main {

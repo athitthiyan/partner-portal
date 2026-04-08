@@ -41,14 +41,14 @@ import { AuthService } from '../../core/services/auth.service';
     .auth-card {
       width: min(100%, 460px);
       background: rgba(12, 19, 33, 0.92);
-      border: 1px solid var(--pp-border);
+      border: 1px solid var(--sv-border);
       border-radius: 24px;
       padding: 32px;
       box-shadow: 0 30px 80px rgba(2, 6, 23, 0.42);
     }
 
     .auth-card__eyebrow {
-      color: var(--pp-primary);
+      color: var(--sv-gold);
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-size: 0.76rem;
@@ -63,7 +63,7 @@ import { AuthService } from '../../core/services/auth.service';
 
     .auth-card__copy,
     .auth-link {
-      color: var(--pp-text-muted);
+      color: var(--sv-text-muted);
     }
 
     .auth-form {
@@ -77,13 +77,13 @@ import { AuthService } from '../../core/services/auth.service';
       width: 100%;
       border-radius: 14px;
       padding: 14px 16px;
-      border: 1px solid var(--pp-border);
-      background: var(--pp-surface);
-      color: var(--pp-text);
+      border: 1px solid var(--sv-border);
+      background: var(--sv-surface);
+      color: var(--sv-text);
     }
 
     .auth-form button {
-      background: linear-gradient(135deg, var(--pp-primary), var(--pp-primary-2));
+      background: var(--sv-gradient-gold);
       color: #111827;
       font-weight: 700;
       border: none;

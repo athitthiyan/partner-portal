@@ -74,11 +74,11 @@ jobs:
         run: npm run build:prod
 
       - name: Verify output directory exists
-        run: test -d dist/stayease-partner-portal/browser
+        run: test -d dist/stayvora-partner-portal
 
       - name: Upload build artefact
         uses: actions/upload-artifact@v4
         with:
           name: partner-portal-dist
-          path: dist/stayease-partner-portal/browser/
+          path: dist/stayvora-partner-portal/
           retention-days: 7

@@ -113,6 +113,35 @@ describe('Partner AuthService', () => {
     expect(service.accessToken()).toBe('computed-access');
   });
 
+  it('refreshes tokens through the auth refresh endpoint', () => {
+    localStorage.setItem('partner_portal_refresh_token', 'saved-refresh');
+    TestBed.resetTestingModule();
+    configureTestingModule();
+
+    service.refreshToken$().subscribe(response => {
+      expect(response.access_token).toBe('new-access');
+    });
+
+    const request = http.expectOne(`${environment.apiUrl}/auth/refresh`);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({ refresh_token: 'saved-refresh' });
+    request.flush({
+      access_token: 'new-access',
+      refresh_token: 'new-refresh',
+      token_type: 'bearer',
+      user: {
+        id: 1,
+        email: 'partner@example.com',
+        full_name: 'Partner Owner',
+        is_admin: false,
+        is_partner: true,
+        is_active: true,
+      },
+    });
+
+    expect(service.accessToken()).toBe('new-access');
+  });
+
   it('restores the active partner session from auth/me', () => {
     TestBed.resetTestingModule();
     localStorage.setItem('partner_portal_access_token', 'saved-access');

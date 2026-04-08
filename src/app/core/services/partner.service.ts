@@ -47,6 +47,18 @@ export class PartnerService {
     return this.http.get<PartnerBookingListResponse>(`${environment.apiUrl}/partner/bookings`);
   }
 
+  acceptBooking(bookingId: number): Observable<{ id: number; status: string; message: string }> {
+    return this.http.post<{ id: number; status: string; message: string }>(
+      `${environment.apiUrl}/partner/bookings/${bookingId}/accept`, {}
+    );
+  }
+
+  rejectBooking(bookingId: number): Observable<{ id: number; status: string; refund_initiated: boolean; message: string }> {
+    return this.http.post<{ id: number; status: string; refund_initiated: boolean; message: string }>(
+      `${environment.apiUrl}/partner/bookings/${bookingId}/reject`, {}
+    );
+  }
+
   getRevenue(): Observable<PartnerRevenueSummary> {
     return this.http.get<PartnerRevenueSummary>(`${environment.apiUrl}/partner/revenue`);
   }

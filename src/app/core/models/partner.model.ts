@@ -69,9 +69,17 @@ export interface PartnerBooking {
   check_in: string;
   check_out: string;
   guests: number;
+  adults: number;
+  children: number;
+  infants: number;
   total_amount: number;
   status: string;
   payment_status: string;
+  refund_status?: string;
+  refund_amount?: number;
+  refund_requested_at?: string;
+  refund_initiated_at?: string;
+  refund_completed_at?: string;
 }
 
 export interface PartnerBookingListResponse {

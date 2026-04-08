@@ -114,4 +114,44 @@ describe('RoomsComponent', () => {
     expect(component.draft.weekend_price).toBeNull();
     expect(component.draft.holiday_price).toBeNull();
   });
+
+  it('toggles built-in amenities on and off', () => {
+    const component = fixture.componentInstance;
+
+    component.toggleAmenity('WiFi');
+    expect(component.selectedAmenities().has('WiFi')).toBe(true);
+
+    component.toggleAmenity('WiFi');
+    expect(component.selectedAmenities().has('WiFi')).toBe(false);
+  });
+
+  it('adds a custom amenity once and clears the input', () => {
+    const component = fixture.componentInstance;
+    const preventDefault = jest.fn();
+    component.customAmenity = '  Butler Service  ';
+
+    component.addCustomAmenity({ preventDefault } as unknown as Event);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(component.selectedAmenities().has('Butler Service')).toBe(true);
+    expect(component.customAmenity).toBe('');
+
+    component.customAmenity = 'Butler Service';
+    component.addCustomAmenity({ preventDefault } as unknown as Event);
+    expect(component.selectedAmenities().size).toBe(1);
+  });
+
+  it('resets the draft after saving an existing room type', () => {
+    const component = fixture.componentInstance;
+    const room = component.rooms()[0];
+
+    component.editRoom(room);
+    component.customAmenity = 'Late checkout';
+    component.saveRoomType();
+
+    expect(component.editingId()).toBeNull();
+    expect(component.selectedAmenities().size).toBe(0);
+    expect(component.customAmenity).toBe('');
+    expect(component.draft.room_type_name).toBe('Suite');
+  });
 });
