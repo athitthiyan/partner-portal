@@ -42,6 +42,7 @@ describe('RegisterComponent', () => {
 
   it('navigates to the dashboard after successful registration', () => {
     authService.register.mockReturnValue(of({}));
+    fixture.componentInstance.supportPhoneNumber = '98765 43210';
 
     fixture.componentInstance.register();
 
@@ -52,7 +53,7 @@ describe('RegisterComponent', () => {
       legal_name: '',
       display_name: '',
       support_email: '',
-      support_phone: '',
+      support_phone: '+91 98765 43210',
       address_line: '',
       city: '',
       state: '',
@@ -78,6 +79,7 @@ describe('RegisterComponent', () => {
         error: { detail: 'Hotel already exists' },
       }))
     );
+    fixture.componentInstance.supportPhoneNumber = '98765 43210';
 
     fixture.componentInstance.register();
 
@@ -85,8 +87,29 @@ describe('RegisterComponent', () => {
     expect(fixture.componentInstance.loading()).toBe(false);
   });
 
+  it('shows FastAPI validation details when registration fails with a 422 payload', () => {
+    authService.register.mockReturnValue(
+      throwError(() => ({
+        error: {
+          detail: [
+            {
+              loc: ['body', 'support_phone'],
+              msg: 'String should have at least 7 characters',
+            },
+          ],
+        },
+      }))
+    );
+    fixture.componentInstance.supportPhoneNumber = '12';
+    fixture.componentInstance.register();
+
+    expect(fixture.componentInstance.error()).toBe('support_phone: String should have at least 7 characters');
+    expect(fixture.componentInstance.loading()).toBe(false);
+  });
+
   it('falls back to a generic message when registration fails without detail', () => {
     authService.register.mockReturnValue(throwError(() => ({})));
+    fixture.componentInstance.supportPhoneNumber = '98765 43210';
 
     fixture.componentInstance.register();
 
@@ -122,11 +145,11 @@ describe('RegisterComponent', () => {
       legal_name: 'Stayvora Hospitality',
       display_name: 'Stayvora Marina Suites',
       support_email: 'partner@example.com',
-      support_phone: '+91 98765 43210',
       address_line: '12 Marina Beach Road',
       city: 'Chennai',
       country: 'India',
     });
+    component.supportPhoneNumber = '98765 43210';
 
     expect(component.isStep1Valid()).toBe(true);
     expect(component.isAddressValid()).toBe(true);
@@ -144,6 +167,30 @@ describe('RegisterComponent', () => {
     component.prevStep();
     component.prevStep();
     expect(component.currentStep()).toBe(1);
+  });
+
+  it('requires a phone number before submitting the registration', () => {
+    fixture.componentInstance.supportPhoneNumber = '';
+
+    fixture.componentInstance.register();
+
+    expect(authService.register).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.error()).toBe('support_phone: Phone number is required.');
+    expect(fixture.componentInstance.loading()).toBe(false);
+  });
+
+  it('combines phone code and phone number in the registration payload', () => {
+    authService.register.mockReturnValue(of({}));
+    fixture.componentInstance.phoneCode = '+44';
+    fixture.componentInstance.supportPhoneNumber = '7700 900123';
+
+    fixture.componentInstance.register();
+
+    expect(authService.register).toHaveBeenCalledWith(
+      expect.objectContaining({
+        support_phone: '+44 7700 900123',
+      }),
+    );
   });
 
   it('uses backend geocoding results when available', () => {

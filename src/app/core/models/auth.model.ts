@@ -27,6 +27,10 @@ export interface PartnerRegisterPayload {
   state?: string;
   country: string;
   postal_code?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  formatted_address?: string;
+  location_verified?: boolean;
   gst_number?: string;
   bank_account_name?: string;
   bank_account_number?: string;

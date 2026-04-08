@@ -98,10 +98,6 @@ interface LeafletLike {
                   <input id="support_email" name="support_email" [(ngModel)]="form.support_email" type="email" placeholder="support@hotel.com" required />
                 </div>
                 <div class="form-group">
-                  <label for="support_phone">Support Phone</label>
-                  <input id="support_phone" name="support_phone" [(ngModel)]="form.support_phone" placeholder="+91 98765 43210" required />
-                </div>
-                <div class="form-group">
                   <label for="gst_number">GST Number <span class="optional">(optional)</span></label>
                   <input id="gst_number" name="gst_number" [(ngModel)]="form.gst_number" placeholder="33ABCDE1234F1Z5" />
                 </div>
@@ -172,6 +168,18 @@ interface LeafletLike {
                     <option value="+81">+81 (Japan)</option>
                   </select>
                 </div>
+                <div class="form-group">
+                  <label for="support_phone_number">Phone Number</label>
+                  <input
+                    id="support_phone_number"
+                    name="support_phone_number"
+                    [(ngModel)]="supportPhoneNumber"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="98765 43210"
+                    required
+                  />
+                </div>
               </div>
 
               <!-- Validate Location Button -->
@@ -229,7 +237,7 @@ interface LeafletLike {
 
               <div class="form-actions">
                 <button type="button" class="btn btn--ghost" (click)="prevStep()">Back</button>
-                <button type="button" class="btn btn--primary" (click)="nextStep()" [disabled]="!locationValidated()">
+                <button type="button" class="btn btn--primary" (click)="nextStep()" [disabled]="!locationValidated() || !supportPhoneNumber.trim()">
                   Continue to Payout
                 </button>
               </div>
@@ -694,6 +702,7 @@ export class RegisterComponent implements AfterViewChecked {
   private locationMap: LeafletMapLike | null = null;
   private locationMarker: LeafletMarkerLike | null = null;
   phoneCode = '+91';
+  supportPhoneNumber = '';
 
   availableStates = signal<string[]>([]);
   availableCities = signal<string[]>([]);
@@ -766,7 +775,6 @@ export class RegisterComponent implements AfterViewChecked {
     legal_name: '',
     display_name: '',
     support_email: '',
-    support_phone: '',
     address_line: '',
     address_line_2: '',
     city: '',
@@ -796,8 +804,7 @@ export class RegisterComponent implements AfterViewChecked {
       this.form['password'] &&
       this.form['legal_name'] &&
       this.form['display_name'] &&
-      this.form['support_email'] &&
-      this.form['support_phone']
+      this.form['support_email']
     );
   }
 
@@ -960,6 +967,12 @@ export class RegisterComponent implements AfterViewChecked {
     this.loading.set(true);
     this.error.set('');
 
+    if (!this.supportPhoneNumber.trim()) {
+      this.error.set('support_phone: Phone number is required.');
+      this.loading.set(false);
+      return;
+    }
+
     // Build payload matching the PartnerRegisterRequest schema
     const payload = {
       email: this.form['email'],
@@ -968,7 +981,7 @@ export class RegisterComponent implements AfterViewChecked {
       legal_name: this.form['legal_name'],
       display_name: this.form['display_name'],
       support_email: this.form['support_email'],
-      support_phone: this.form['support_phone'],
+      support_phone: this.buildSupportPhone(),
       address_line: [this.form['address_line'], this.form['address_line_2']].filter(Boolean).join(', '),
       city: this.form['city'],
       state: this.form['state'],
@@ -987,11 +1000,33 @@ export class RegisterComponent implements AfterViewChecked {
 
     this.auth.register(payload).subscribe({
       next: () => this.router.navigate(['/']),
-      error: (err: { error?: { detail?: string } }) => {
-        this.error.set(err?.error?.detail || 'Unable to create partner account right now.');
+      error: (err: { error?: { detail?: string | Array<{ msg?: string; loc?: Array<string | number> }> } }) => {
+        this.error.set(this.extractErrorMessage(err));
         this.loading.set(false);
       },
       complete: () => this.loading.set(false),
     });
+  }
+
+  private buildSupportPhone(): string {
+    const normalizedCode = this.phoneCode.trim();
+    const normalizedNumber = this.supportPhoneNumber.replace(/\s+/g, ' ').trim();
+    return [normalizedCode, normalizedNumber].filter(Boolean).join(' ').trim();
+  }
+
+  private extractErrorMessage(
+    err: { error?: { detail?: string | Array<{ msg?: string; loc?: Array<string | number> }> } },
+  ): string {
+    const detail = err?.error?.detail;
+    if (typeof detail === 'string' && detail.trim()) {
+      return detail;
+    }
+    if (Array.isArray(detail) && detail.length > 0) {
+      const firstError = detail[0];
+      const field = firstError.loc?.[firstError.loc.length - 1];
+      const prefix = typeof field === 'string' ? `${field}: ` : '';
+      return `${prefix}${firstError.msg || 'Invalid partner registration data.'}`;
+    }
+    return 'Unable to create partner account right now.';
   }
 }
