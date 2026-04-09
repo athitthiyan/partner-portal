@@ -1,12 +1,11 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthResponse, PartnerRegisterPayload, PartnerUser } from '../models/auth.model';
 
-const ACCESS_TOKEN_KEY = 'partner_portal_access_token';
-const REFRESH_TOKEN_KEY = 'partner_portal_refresh_token';
+// Access token in memory only; refresh token in HttpOnly cookie (set by backend)
 const AUTH_USER_KEY = 'partner_portal_auth_user';
 
 @Injectable({ providedIn: 'root' })
@@ -14,8 +13,8 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  private accessTokenState = signal<string | null>(localStorage.getItem(ACCESS_TOKEN_KEY));
-  private refreshTokenState = signal<string | null>(localStorage.getItem(REFRESH_TOKEN_KEY));
+  // Access token in memory only (not persisted)
+  private accessTokenState = signal<string | null>(null);
   private userState = signal<PartnerUser | null>(this.readStoredUser());
 
   readonly accessToken = computed(() => this.accessTokenState());
@@ -24,52 +23,54 @@ export class AuthService {
   readonly isPartner = computed(() => this.userState()?.is_partner === true);
 
   login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/partner/login`, { email, password }).pipe(
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/partner/login`, { email, password }, { withCredentials: true }).pipe(
       tap(response => this.applyAuth(response))
     );
   }
 
   refreshToken$(): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/refresh`, {
-      refresh_token: this.refreshTokenState(),
-    }).pipe(
+    // Refresh token is sent automatically via HttpOnly cookie
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/refresh`, {}, { withCredentials: true }).pipe(
       tap(response => this.applyAuth(response))
     );
   }
 
   register(payload: PartnerRegisterPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/partner/register`, payload).pipe(
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/partner/register`, payload, { withCredentials: true }).pipe(
       tap(response => this.applyAuth(response))
     );
   }
 
-  restoreSession(): Observable<PartnerUser> | null {
-    if (!this.accessTokenState()) {
-      return null;
+  /**
+   * Restore session on app init by calling /auth/refresh.
+   * HttpOnly cookie is sent automatically. Returns true if restored.
+   */
+  restoreSession(): Observable<boolean> {
+    if (!this.readStoredUser()) {
+      return of(false);
     }
-    return this.http.get<PartnerUser>(`${environment.apiUrl}/auth/me`).pipe(
-      tap(user => {
-        if (!user.is_partner) {
+    return this.refreshToken$().pipe(
+      map(res => {
+        if (!res.user || !(res.user as unknown as PartnerUser).is_partner) {
           this.logout(false);
-          return;
+          return false;
         }
-        this.userState.set(user);
-        localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-      })
+        return true;
+      }),
+      catchError(() => {
+        localStorage.removeItem(AUTH_USER_KEY);
+        this.accessTokenState.set(null);
+        this.userState.set(null);
+        return of(false);
+      }),
     );
   }
 
   logout(redirect = true) {
-    // Revoke refresh token server-side (fire-and-forget)
-    const rt = this.refreshTokenState();
-    if (rt) {
-      this.http.post(`${environment.apiUrl}/auth/logout`, { refresh_token: rt }).subscribe();
-    }
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    // Revoke refresh token server-side (cookie sent automatically)
+    this.http.post(`${environment.apiUrl}/auth/logout`, {}, { withCredentials: true }).subscribe();
     localStorage.removeItem(AUTH_USER_KEY);
     this.accessTokenState.set(null);
-    this.refreshTokenState.set(null);
     this.userState.set(null);
     if (redirect) {
       this.router.navigate(['/login']);
@@ -78,10 +79,8 @@ export class AuthService {
 
   private applyAuth(response: AuthResponse) {
     this.accessTokenState.set(response.access_token);
-    this.refreshTokenState.set(response.refresh_token);
     this.userState.set(response.user);
-    localStorage.setItem(ACCESS_TOKEN_KEY, response.access_token);
-    localStorage.setItem(REFRESH_TOKEN_KEY, response.refresh_token);
+    // Only cache user profile (non-sensitive) in localStorage
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(response.user));
   }
 

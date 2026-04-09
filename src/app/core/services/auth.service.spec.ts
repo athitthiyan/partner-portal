@@ -51,6 +51,7 @@ describe('Partner AuthService', () => {
 
     expect(service.isAuthenticated()).toBe(true);
     expect(service.isPartner()).toBe(true);
+    expect(localStorage.getItem('partner_portal_auth_user')).toContain('partner@example.com');
   });
 
   it('stores partner credentials after registration', () => {
@@ -83,11 +84,13 @@ describe('Partner AuthService', () => {
       },
     });
 
-    expect(localStorage.getItem('partner_portal_access_token')).toBe('access');
+    expect(localStorage.getItem('partner_portal_auth_user')).toContain('partner@example.com');
   });
 
   it('returns null from restoreSession when no token exists', () => {
-    expect(service.restoreSession()).toBeNull();
+    service.restoreSession().subscribe(restored => {
+      expect(restored).toBe(false);
+    });
   });
 
   it('exposes the current access token through the computed getter', () => {
@@ -114,7 +117,14 @@ describe('Partner AuthService', () => {
   });
 
   it('refreshes tokens through the auth refresh endpoint', () => {
-    localStorage.setItem('partner_portal_refresh_token', 'saved-refresh');
+    localStorage.setItem('partner_portal_auth_user', JSON.stringify({
+      id: 1,
+      email: 'partner@example.com',
+      full_name: 'Partner Owner',
+      is_admin: false,
+      is_partner: true,
+      is_active: true,
+    }));
     TestBed.resetTestingModule();
     configureTestingModule();
 
@@ -124,7 +134,8 @@ describe('Partner AuthService', () => {
 
     const request = http.expectOne(`${environment.apiUrl}/auth/refresh`);
     expect(request.request.method).toBe('POST');
-    expect(request.request.body).toEqual({ refresh_token: 'saved-refresh' });
+    expect(request.request.body).toEqual({});
+    expect(request.request.withCredentials).toBe(true);
     request.flush({
       access_token: 'new-access',
       refresh_token: 'new-refresh',
@@ -144,8 +155,6 @@ describe('Partner AuthService', () => {
 
   it('restores the active partner session from auth/me', () => {
     TestBed.resetTestingModule();
-    localStorage.setItem('partner_portal_access_token', 'saved-access');
-    localStorage.setItem('partner_portal_refresh_token', 'saved-refresh');
     localStorage.setItem(
       'partner_portal_auth_user',
       JSON.stringify({
@@ -159,19 +168,24 @@ describe('Partner AuthService', () => {
     );
     configureTestingModule();
 
-    service.restoreSession()?.subscribe(user => {
-      expect(user.is_partner).toBe(true);
+    service.restoreSession()?.subscribe(restored => {
+      expect(restored).toBe(true);
     });
 
-    const request = http.expectOne(`${environment.apiUrl}/auth/me`);
-    expect(request.request.method).toBe('GET');
+    const request = http.expectOne(`${environment.apiUrl}/auth/refresh`);
+    expect(request.request.method).toBe('POST');
     request.flush({
-      id: 3,
-      email: 'partner@example.com',
-      full_name: 'Partner Owner',
-      is_admin: false,
-      is_partner: true,
-      is_active: true,
+      access_token: 'new-access',
+      refresh_token: 'new-refresh',
+      token_type: 'bearer',
+      user: {
+        id: 3,
+        email: 'partner@example.com',
+        full_name: 'Partner Owner',
+        is_admin: false,
+        is_partner: true,
+        is_active: true,
+      },
     });
 
     expect(service.user()?.full_name).toBe('Partner Owner');
@@ -179,8 +193,6 @@ describe('Partner AuthService', () => {
 
   it('logs out without redirect when restoreSession returns a non-partner user', () => {
     TestBed.resetTestingModule();
-    localStorage.setItem('partner_portal_access_token', 'saved-access');
-    localStorage.setItem('partner_portal_refresh_token', 'saved-refresh');
     localStorage.setItem(
       'partner_portal_auth_user',
       JSON.stringify({
@@ -196,14 +208,19 @@ describe('Partner AuthService', () => {
 
     service.restoreSession()?.subscribe();
 
-    const request = http.expectOne(`${environment.apiUrl}/auth/me`);
+    const request = http.expectOne(`${environment.apiUrl}/auth/refresh`);
     request.flush({
-      id: 4,
-      email: 'user@example.com',
-      full_name: 'Regular User',
-      is_admin: false,
-      is_partner: false,
-      is_active: true,
+      access_token: 'saved-access',
+      refresh_token: 'saved-refresh',
+      token_type: 'bearer',
+      user: {
+        id: 4,
+        email: 'user@example.com',
+        full_name: 'Regular User',
+        is_admin: false,
+        is_partner: false,
+        is_active: true,
+      },
     });
 
     // Flush the fire-and-forget logout POST triggered by non-partner detection
@@ -212,19 +229,17 @@ describe('Partner AuthService', () => {
     logoutReq.flush({ message: 'Logged out successfully' });
 
     expect(service.isAuthenticated()).toBe(false);
-    expect(localStorage.getItem('partner_portal_access_token')).toBeNull();
+    expect(localStorage.getItem('partner_portal_auth_user')).toBeNull();
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('clears local storage and redirects on logout by default', () => {
-    localStorage.setItem('partner_portal_access_token', 'saved-access');
-    localStorage.setItem('partner_portal_refresh_token', 'saved-refresh');
     localStorage.setItem('partner_portal_auth_user', '{"id":1}');
 
     service.logout();
 
-    expect(localStorage.getItem('partner_portal_access_token')).toBeNull();
-    expect(localStorage.getItem('partner_portal_refresh_token')).toBeNull();
+    http.expectOne(`${environment.apiUrl}/auth/logout`).flush({ message: 'Logged out successfully' });
+
     expect(localStorage.getItem('partner_portal_auth_user')).toBeNull();
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
@@ -232,8 +247,6 @@ describe('Partner AuthService', () => {
   it('removes malformed stored users during initialization', () => {
     TestBed.resetTestingModule();
     localStorage.setItem('partner_portal_auth_user', '{invalid-json');
-    localStorage.setItem('partner_portal_access_token', 'saved-access');
-    localStorage.setItem('partner_portal_refresh_token', 'saved-refresh');
 
     configureTestingModule();
 
@@ -243,13 +256,13 @@ describe('Partner AuthService', () => {
   });
 
   it('clears storage without redirect when logout is called with redirect disabled', () => {
-    localStorage.setItem('partner_portal_access_token', 'saved-access');
-    localStorage.setItem('partner_portal_refresh_token', 'saved-refresh');
     localStorage.setItem('partner_portal_auth_user', '{"id":1}');
 
     service.logout(false);
 
-    expect(localStorage.getItem('partner_portal_access_token')).toBeNull();
+    http.expectOne(`${environment.apiUrl}/auth/logout`).flush({ message: 'Logged out successfully' });
+
+    expect(localStorage.getItem('partner_portal_auth_user')).toBeNull();
     expect(router.navigate).not.toHaveBeenCalled();
   });
 });

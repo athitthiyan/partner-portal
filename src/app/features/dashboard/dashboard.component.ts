@@ -62,25 +62,24 @@ import { PartnerService } from '../../core/services/partner.service';
       margin-top: 8px;
       font-size: 2rem;
     }
-    /* Tablet (768–900px): 2-col grid */
-    @media (min-width: 768px) and (max-width: 899px) {
+    @media (min-width: 768px) {
       .dashboard__metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       .dashboard__card strong { font-size: 1.6rem; }
     }
 
-    /* Desktop (900px+): 4-col grid */
-    @media (min-width: 900px) {
+    @media (min-width: 1024px) {
       .dashboard__metrics {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }
 
-    /* Mobile (<768px): 1-col stacked */
-    @media (max-width: 767px) {
-      .dashboard__metrics { gap: 10px; }
-      .dashboard__card strong { font-size: 1.5rem; }
+    @media (min-width: 1440px) {
+      .dashboard__hero,
+      .dashboard__card {
+        padding: 24px 28px;
+      }
     }
   `],
 })

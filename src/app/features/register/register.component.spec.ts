@@ -205,7 +205,7 @@ describe('RegisterComponent', () => {
 
     component.validateLocation();
 
-    const request = httpMock.expectOne('http://127.0.0.1:8000/api/geocode');
+    const request = httpMock.expectOne('http://localhost:8000/api/geocode');
     expect(request.request.method).toBe('POST');
     request.flush({
       found: true,
@@ -231,7 +231,7 @@ describe('RegisterComponent', () => {
 
     component.validateLocation();
 
-    httpMock.expectOne('http://127.0.0.1:8000/api/geocode').flush({ found: false });
+    httpMock.expectOne('http://localhost:8000/api/geocode').flush({ found: false });
     const nominatimRequest = httpMock.expectOne(req => req.url.startsWith('https://nominatim.openstreetmap.org/search?'));
     nominatimRequest.flush([
       {
@@ -256,7 +256,7 @@ describe('RegisterComponent', () => {
 
     component.validateLocation();
 
-    httpMock.expectOne('http://127.0.0.1:8000/api/geocode').flush('boom', {
+    httpMock.expectOne('http://localhost:8000/api/geocode').flush('boom', {
       status: 500,
       statusText: 'Server Error',
     });
@@ -280,7 +280,7 @@ describe('RegisterComponent', () => {
 
     component.validateLocation();
 
-    httpMock.expectOne('http://127.0.0.1:8000/api/geocode').flush({ found: false });
+    httpMock.expectOne('http://localhost:8000/api/geocode').flush({ found: false });
     httpMock.expectOne(req => req.url.startsWith('https://nominatim.openstreetmap.org/search?')).flush([]);
 
     expect(component.locationValidated()).toBe(false);

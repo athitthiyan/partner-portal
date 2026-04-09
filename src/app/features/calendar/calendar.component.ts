@@ -117,7 +117,7 @@ import { PartnerService } from '../../core/services/partner.service';
     .calendar__head {
       display: grid;
       gap: 16px;
-      grid-template-columns: 1fr minmax(220px, 280px);
+      grid-template-columns: 1fr;
       align-items: end;
     }
     .calendar__eyebrow {
@@ -138,7 +138,7 @@ import { PartnerService } from '../../core/services/partner.service';
     }
     .calendar__controls {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: 1fr;
       gap: 12px;
       padding: 18px;
     }
@@ -206,7 +206,7 @@ import { PartnerService } from '../../core/services/partner.service';
     .calendar__grid {
       display: grid;
       gap: 10px;
-      grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+      grid-template-columns: 1fr;
     }
     .calendar__day {
       padding: 14px;
@@ -290,12 +290,22 @@ import { PartnerService } from '../../core/services/partner.service';
       color: #f87171;
       font-style: italic;
     }
-    @media (max-width: 860px) {
-      .calendar__head { grid-template-columns: 1fr; }
+    @media (min-width: 768px) {
+      .calendar__head { grid-template-columns: 1fr minmax(220px, 280px); }
+      .calendar__controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .calendar__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
-    @media (max-width: 480px) {
+
+    @media (min-width: 1024px) {
+      .calendar__controls { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .calendar__grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1440px) {
+      .calendar__grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
       }
     }
   `],

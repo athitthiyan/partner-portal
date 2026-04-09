@@ -37,7 +37,8 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
   styles: [`
     .partner-layout {
       min-height: 100vh;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr;
       position: relative;
       background: var(--sv-bg);
     }
@@ -51,7 +52,10 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
 
     .partner-layout__content {
       flex: 1;
-      padding: 16px;
+      width: 100%;
+      max-width: var(--sv-layout-max);
+      margin-inline: auto;
+      padding: var(--sv-space-md);
       overflow-y: auto;
     }
 
@@ -71,11 +75,29 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
       pointer-events: auto;
     }
 
-    @media (min-width: 769px) {
+    @media (min-width: 768px) {
       .partner-layout__content {
-        padding: 28px;
+        padding: var(--sv-space-lg);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .partner-layout {
+        grid-template-columns: auto minmax(0, 1fr);
       }
 
+      .partner-layout__content {
+        padding: var(--sv-space-xl);
+      }
+    }
+
+    @media (min-width: 1440px) {
+      .partner-layout__content {
+        padding: var(--sv-space-2xl);
+      }
+    }
+
+    @media (min-width: 768px) {
       .partner-layout__overlay {
         display: none;
       }

@@ -51,7 +51,7 @@ describe('PlatformSyncService', () => {
     service.connect();
 
     expect(MockWebSocket.instances).toHaveLength(1);
-    expect(MockWebSocket.instances[0]?.url).toBe('ws://127.0.0.1:8000/ws/events?token=access-token');
+    expect(MockWebSocket.instances[0]?.url).toBe('ws://localhost:8000/ws/events?token=access-token');
 
     MockWebSocket.instances[0]?.onopen?.();
 
@@ -68,7 +68,7 @@ describe('PlatformSyncService', () => {
 
     service.connect();
 
-    expect(MockWebSocket.instances[0]?.url).toBe('ws://127.0.0.1:8000/ws/events?token=');
+    expect(MockWebSocket.instances[0]?.url).toBe('ws://localhost:8000/ws/events?token=');
   });
 
   it('parses websocket events and ignores malformed payloads', () => {

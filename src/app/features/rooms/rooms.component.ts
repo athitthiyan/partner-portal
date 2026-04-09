@@ -323,50 +323,47 @@ type PartnerRoomType = PartnerRoom['room_type'];
       max-width: 320px;
     }
 
-    /* Tablet (768–900px) */
-    @media (min-width: 768px) and (max-width: 900px) {
-      .rooms__grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      }
-      .rooms__cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    /* Mobile default: stacked layout */
+    .rooms__grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .rooms__cards {
+      grid-template-columns: 1fr;
+    }
+    .rooms__form,
+    .rooms__card {
+      padding: 14px;
+      border-radius: 16px;
+    }
+    .rooms__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .rooms__actions button,
+    .rooms__card-actions button {
+      min-width: 100px;
+      font-size: 0.82rem;
     }
 
-    /* Mobile (<768px) */
-    @media (max-width: 767px) {
-      .rooms__grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-      .rooms__cards {
-        grid-template-columns: 1fr;
-      }
+    /* sm (480px+) */
+    @media (min-width: 480px) {
+      .rooms__grid { grid-template-columns: 1fr 1fr; }
       .rooms__form,
-      .rooms__card {
-        padding: 16px;
-        border-radius: 18px;
-      }
-      .rooms__facts {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      .rooms__card { padding: 16px; border-radius: 18px; }
     }
 
-    /* Small mobile (<480px) */
-    @media (max-width: 480px) {
-      .rooms__grid {
-        grid-template-columns: 1fr;
-      }
+    /* md (768px+) */
+    @media (min-width: 768px) {
+      .rooms__grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+      .rooms__cards { grid-template-columns: repeat(2, 1fr); }
       .rooms__form,
-      .rooms__card {
-        padding: 14px;
-        border-radius: 16px;
-      }
-      .rooms__actions button,
-      .rooms__card-actions button {
-        min-width: 100px;
-        font-size: 0.82rem;
-      }
+      .rooms__card { padding: 20px; border-radius: 20px; }
+    }
+
+    /* lg (1024px+) */
+    @media (min-width: 1024px) {
+      .rooms__grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+      .rooms__cards { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
     }
   `],
 })

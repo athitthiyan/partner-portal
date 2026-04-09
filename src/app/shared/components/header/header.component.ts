@@ -116,14 +116,17 @@ import { AuthService } from '../../../core/services/auth.service';
       font-size: 0.8rem;
     }
 
-    @media (max-width: 768px) {
-      .partner-header__brand p,
-      .partner-header__launch {
-        display: none;
-      }
+    /* Mobile default: hide secondary elements */
+    .partner-header__brand p,
+    .partner-header__launch {
+      display: none;
     }
 
     @media (min-width: 769px) {
+      .partner-header__brand p,
+      .partner-header__launch {
+        display: block;
+      }
       .partner-header {
         padding: 18px 28px;
         flex-wrap: nowrap;

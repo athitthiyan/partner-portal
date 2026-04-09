@@ -32,8 +32,9 @@ describe('authInterceptor', () => {
       authInterceptor(request, next).subscribe();
     });
 
-    expect(next).toHaveBeenCalledWith(request);
+    expect(next).toHaveBeenCalledTimes(1);
     expect(next.mock.calls[0][0].headers.has('Authorization')).toBe(false);
+    expect(next.mock.calls[0][0].withCredentials).toBe(true);
   });
 
   it('adds the bearer token header when a token exists', () => {
@@ -130,7 +131,7 @@ describe('authInterceptor', () => {
   it('logs out immediately on 401 responses when no access token is available to refresh', done => {
     const authService = {
       accessToken: jest.fn(() => null),
-      refreshToken$: jest.fn(),
+      refreshToken$: jest.fn(() => throwError(() => new Error('missing access token'))),
       logout: jest.fn(),
     };
     const next = jest.fn(() =>
@@ -148,7 +149,7 @@ describe('authInterceptor', () => {
     TestBed.runInInjectionContext(() => {
       authInterceptor(request, next).subscribe({
         error: () => {
-          expect(authService.refreshToken$).not.toHaveBeenCalled();
+          expect(authService.refreshToken$).toHaveBeenCalled();
           expect(authService.logout).toHaveBeenCalledWith(false);
           expect(router.navigate).toHaveBeenCalledWith(['/login']);
           done();

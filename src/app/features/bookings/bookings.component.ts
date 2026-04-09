@@ -234,7 +234,7 @@ interface PartnerTab {
     }
 
     .bk-row__details {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
     }
     .bk-detail { display: flex; flex-direction: column; gap: 2px; }
     .bk-detail__label {
@@ -316,25 +316,24 @@ interface PartnerTab {
       50% { box-shadow: 0 0 14px rgba(214,184,107,.7); }
     }
 
-    /* Tablet (768–900px): tighter spacing, 2-col details */
-    @media (min-width: 768px) and (max-width: 900px) {
-      .bookings-hero h2 { font-size: 1.3rem; }
-      .bk-row__details { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-      .bk-row { padding: 14px; }
-      .hero-stats { gap: 8px; }
+    /* Mobile default: stacked layout */
+    .bk-row__primary { flex-direction: column; gap: 8px; }
+    .hero-stats { gap: 8px; }
+    .stat-pill { min-width: 70px; padding: 8px 12px; }
+    .tabs { overflow-x: auto; }
+    .tab { white-space: nowrap; }
+
+    /* md (768px+): restore horizontal layout */
+    @media (min-width: 768px) {
+      .bk-row__primary { flex-direction: row; gap: 12px; }
       .stat-pill { min-width: 72px; padding: 8px 14px; }
-      .stat-pill__count { font-size: 1.1rem; }
       .status-timeline { flex-wrap: wrap; gap: 4px; }
     }
 
-    /* Mobile (<768px): stacked layout */
-    @media (max-width: 767px) {
-      .bk-row__details { grid-template-columns: repeat(2, 1fr); }
-      .bk-row__primary { flex-direction: column; gap: 8px; }
-      .hero-stats { gap: 8px; }
-      .stat-pill { min-width: 70px; padding: 8px 12px; }
-      .tabs { overflow-x: auto; }
-      .tab { padding: 8px 14px; font-size: 13px; white-space: nowrap; }
+    /* lg (1024px+): 4-col details */
+    @media (min-width: 1024px) {
+      .bk-row__details { grid-template-columns: repeat(4, 1fr); }
+      .stat-pill { min-width: 80px; }
     }
 
     /* Small mobile (<480px) */

@@ -47,7 +47,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   `,
   styles: [`
     .sidebar {
-      width: 280px;
+      width: min(86vw, 320px);
       min-height: 100dvh;
       background: var(--sv-bg-2, #0d1321);
       border-right: 1px solid var(--sv-border, rgba(255,255,255,0.08));
@@ -190,11 +190,16 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       opacity: 0.5;
     }
 
-    @media (min-width: 769px) {
+    @media (min-width: 768px) {
       .sidebar {
+        width: var(--sidebar-width, 280px);
         position: sticky;
         top: 0;
         transform: none;
+      }
+
+      .sidebar--collapsed {
+        width: 80px;
       }
 
       .sidebar__toggle--desktop {
@@ -207,14 +212,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       }
     }
 
-    @media (max-width: 768px) {
-      .sidebar {
-        width: min(86vw, 320px);
-      }
-      .sidebar--collapsed {
-        width: min(86vw, 320px);
-      }
-    }
+    /* Mobile default width is handled by base sidebar styles */
   `],
 })
 export class SidebarComponent {
