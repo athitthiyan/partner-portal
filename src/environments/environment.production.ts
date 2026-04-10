@@ -4,5 +4,6 @@ export const environment = {
   apiBaseUrl: 'https://hotel-api-production-447d.up.railway.app',
   bookingAppUrl: 'https://stayvora.co.in',
   partnerPortalUrl: 'https://partner.stayvora.co.in',
-  appName: 'Stayvora Partner Portal'
+  appName: 'Stayvora Partner Portal',
+  sentryDsn: ''
 };

@@ -4,5 +4,6 @@ export const environment = {
   apiBaseUrl: 'http://localhost:8000',
   bookingAppUrl: 'http://localhost:4200',
   partnerPortalUrl: 'http://localhost:4203',
-  appName: 'Stayvora Partner Portal'
+  appName: 'Stayvora Partner Portal',
+  sentryDsn: ''
 };

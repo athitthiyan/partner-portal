@@ -5,10 +5,11 @@
  *  Identical contract to customer + admin PlatformSyncService.
  * ═══════════════════════════════════════════════════════════════════════
  */
-import { Injectable, signal, OnDestroy } from '@angular/core';
+import { Injectable, signal, OnDestroy, inject } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Subject, interval, Subscription } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 export type PlatformEventType =
   | 'room-updated'
@@ -33,6 +34,7 @@ export interface PlatformEvent {
 
 @Injectable({ providedIn: 'root' })
 export class PlatformSyncService implements OnDestroy {
+  private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
   private events$ = new Subject<PlatformEvent>();
   private ws: WebSocket | null = null;
@@ -63,14 +65,7 @@ export class PlatformSyncService implements OnDestroy {
   }
 
   private tryWebSocket(): void {
-    let token = '';
-    try {
-      // M-17: Service expects token in localStorage, but auth.service uses memory signal
-      // TODO: Align token storage strategy - consider using a token getter method from auth.service
-      token = localStorage.getItem('access_token') || '';
-    } catch {
-      // localStorage may not be available in SSR or private browsing mode
-    }
+    const token = this.authService.getAccessToken() || '';
     const wsUrl = environment.apiUrl
       .replace('https://', 'wss://')
       .replace('http://', 'ws://') + '/ws/events?token=' + token;

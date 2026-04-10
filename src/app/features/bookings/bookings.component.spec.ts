@@ -554,6 +554,25 @@ describe('BookingsComponent', () => {
       expect(timeline[1].current).toBe(true);
     });
 
+    it('should return fallback timeline when dates are missing', () => {
+      const booking = createBooking({
+        status: 'confirmed',
+        check_in: undefined as unknown as string,
+        check_out: undefined as unknown as string,
+      });
+
+      const timeline = component.getTimeline(booking);
+
+      expect(timeline.length).toBe(3);
+      expect(timeline[0].label).toBe('Confirmed');
+      expect(timeline[0].done).toBe(true);
+      expect(timeline[0].current).toBe(true);
+      expect(timeline[1].label).toBe('Checked In');
+      expect(timeline[1].done).toBe(false);
+      expect(timeline[2].label).toBe('Checked Out');
+      expect(timeline[2].done).toBe(false);
+    });
+
     it('should mark checked out as done after checkout', () => {
       const timeline = component.getTimeline(mockPastConfirmedBooking);
 

@@ -255,6 +255,52 @@ describe('Partner AuthService', () => {
     http.verify();
   });
 
+  it('returns access token via getAccessToken after login', () => {
+    expect(service.getAccessToken()).toBeNull();
+
+    service.login('partner@example.com', 'PartnerPass123').subscribe();
+    http.expectOne(`${environment.apiUrl}/partner/login`).flush({
+      access_token: 'get-access',
+      refresh_token: 'refresh',
+      token_type: 'bearer',
+      user: {
+        id: 1,
+        email: 'partner@example.com',
+        full_name: 'Partner Owner',
+        is_admin: false,
+        is_partner: true,
+        is_active: true,
+      },
+    });
+
+    expect(service.getAccessToken()).toBe('get-access');
+  });
+
+  it('clears auth state when restoreSession refresh fails', () => {
+    TestBed.resetTestingModule();
+    localStorage.setItem('partner_portal_auth_user', JSON.stringify({
+      id: 1,
+      email: 'partner@example.com',
+      full_name: 'Partner Owner',
+      is_admin: false,
+      is_partner: true,
+      is_active: true,
+    }));
+    configureTestingModule();
+
+    let restoredResult: boolean | undefined;
+    service.restoreSession().subscribe(restored => {
+      restoredResult = restored;
+    });
+
+    http.expectOne(`${environment.apiUrl}/auth/refresh`).flush({}, { status: 401, statusText: 'Unauthorized' });
+
+    expect(restoredResult).toBe(false);
+    expect(service.accessToken()).toBeNull();
+    expect(service.user()).toBeNull();
+    expect(localStorage.getItem('partner_portal_auth_user')).toBeNull();
+  });
+
   it('clears storage without redirect when logout is called with redirect disabled', () => {
     localStorage.setItem('partner_portal_auth_user', '{"id":1}');
 

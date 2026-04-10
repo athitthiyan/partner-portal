@@ -1,6 +1,7 @@
 import { discardPeriodicTasks, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { PlatformEvent, PlatformSyncService } from './platform-sync.service';
+import { AuthService } from './auth.service';
 
 class MockWebSocket {
   static instances: MockWebSocket[] = [];
@@ -20,30 +21,28 @@ class MockWebSocket {
 
 describe('PlatformSyncService', () => {
   const originalWebSocket = globalThis.WebSocket;
-  const originalLocalStorage = globalThis.localStorage;
   let service: PlatformSyncService;
+  let mockAuthService: { getAccessToken: jest.Mock };
 
   beforeEach(() => {
     MockWebSocket.instances = [];
+    mockAuthService = { getAccessToken: jest.fn().mockReturnValue('access-token') };
     Object.defineProperty(globalThis, 'WebSocket', {
       writable: true,
       value: MockWebSocket,
     });
-    Object.defineProperty(globalThis, 'localStorage', {
-      writable: true,
-      value: {
-        getItem: jest.fn().mockReturnValue('access-token'),
-      },
-    });
 
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: AuthService, useValue: mockAuthService },
+      ],
+    });
     service = TestBed.inject(PlatformSyncService);
   });
 
   afterEach(() => {
-    service.ngOnDestroy();
+    service?.ngOnDestroy();
     Object.defineProperty(globalThis, 'WebSocket', { writable: true, value: originalWebSocket });
-    Object.defineProperty(globalThis, 'localStorage', { writable: true, value: originalLocalStorage });
     jest.restoreAllMocks();
   });
 
@@ -59,12 +58,7 @@ describe('PlatformSyncService', () => {
   });
 
   it('uses an empty token when no access token is stored', () => {
-    Object.defineProperty(globalThis, 'localStorage', {
-      writable: true,
-      value: {
-        getItem: jest.fn().mockReturnValue(null),
-      },
-    });
+    mockAuthService.getAccessToken.mockReturnValue(null);
 
     service.connect();
 

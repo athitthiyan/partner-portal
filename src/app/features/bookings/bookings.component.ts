@@ -406,21 +406,30 @@ export class BookingsComponent implements OnInit, OnDestroy {
       // toSignal auto-subscribes on init; trigger a re-fetch via the service
       // For partner portal, the bookingsData is toSignal — we re-subscribe manually
       this.partnerService.getBookings().subscribe(res => {
-        // Since toSignal can't be re-triggered, update via allBookings cache
+        // Since toSignal can't be re-triggered, update via allBookings cache with fresh timestamp
         this._bookingsCache = res;
+        this._bookingsCacheTimestamp = Date.now();
       });
     });
   }
 
   /**
-   * M-19: Cache for bookings data, invalidated on booking mutations.
-   * TODO: Implement cache invalidation strategy with timestamps or event-based triggers.
-   * Consider TTL-based or event-driven invalidation for consistency.
+   * M-19: Cache for bookings data with TTL-based invalidation.
+   * Cache is valid for CACHE_TTL_MS milliseconds. Requests older than TTL
+   * will trigger a fresh fetch from the server.
    */
+  private readonly CACHE_TTL_MS = 300000; // 5 minutes
   private _bookingsCache: PartnerBookingListResponse | null = null;
+  private _bookingsCacheTimestamp: number | null = null;
 
   allBookings(): PartnerBooking[] {
-    if (this._bookingsCache) return this._bookingsCache.bookings ?? [];
+    // Return cached data only if within TTL
+    if (this._bookingsCache && this._bookingsCacheTimestamp) {
+      const now = Date.now();
+      if (now - this._bookingsCacheTimestamp < this.CACHE_TTL_MS) {
+        return this._bookingsCache.bookings ?? [];
+      }
+    }
     return this.bookingsData()?.bookings ?? [];
   }
 
@@ -433,13 +442,11 @@ export class BookingsComponent implements OnInit, OnDestroy {
       case 'active':
         return all.filter(b =>
           (b.status === 'confirmed' || b.status === 'pending' || b.status === 'processing') &&
-          // TODO: Add null check for b.check_out before creating Date
           b.check_out && new Date(b.check_out) >= now
         );
       case 'past':
         return all.filter(b =>
           b.status === 'completed' ||
-          // TODO: Add null check for b.check_out before creating Date
           (b.status === 'confirmed' && b.check_out && new Date(b.check_out) < now)
         );
       case 'cancelled':
@@ -455,12 +462,10 @@ export class BookingsComponent implements OnInit, OnDestroy {
     return {
       active: all.filter(b =>
         (b.status === 'confirmed' || b.status === 'pending' || b.status === 'processing') &&
-        // TODO: Add null check for b.check_out before creating Date
         b.check_out && new Date(b.check_out) >= now
       ).length,
       past: all.filter(b =>
         b.status === 'completed' ||
-        // TODO: Add null check for b.check_out before creating Date
         (b.status === 'confirmed' && b.check_out && new Date(b.check_out) < now)
       ).length,
       cancelled: all.filter(b => b.status === 'cancelled').length,
@@ -479,7 +484,6 @@ export class BookingsComponent implements OnInit, OnDestroy {
   // ── Timeline (partner perspective) ────────────────────────────────
   getTimeline(booking: PartnerBooking): { label: string; done: boolean; current: boolean }[] {
     const now = new Date();
-    // TODO: Add null checks for booking.check_in and booking.check_out before creating Date objects
     const checkIn = booking.check_in ? new Date(booking.check_in) : null;
     const checkOut = booking.check_out ? new Date(booking.check_out) : null;
 
@@ -598,6 +602,7 @@ export class BookingsComponent implements OnInit, OnDestroy {
   private refreshBookings(): void {
     this.partnerService.getBookings().subscribe(res => {
       this._bookingsCache = res;
+      this._bookingsCacheTimestamp = Date.now();
     });
   }
 

@@ -22,6 +22,14 @@ export class AuthService {
   readonly isAuthenticated = computed(() => !!this.accessTokenState() && !!this.userState());
   readonly isPartner = computed(() => this.userState()?.is_partner === true);
 
+  /**
+   * Public getter for access token used by services like PlatformSyncService
+   * Returns the current access token or null if not authenticated
+   */
+  getAccessToken(): string | null {
+    return this.accessTokenState();
+  }
+
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/partner/login`, { email, password }, { withCredentials: true }).pipe(
       tap(response => this.applyAuth(response))
