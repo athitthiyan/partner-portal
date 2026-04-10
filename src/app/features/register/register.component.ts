@@ -253,19 +253,19 @@ interface LeafletLike {
               <div class="register-form__grid">
                 <div class="form-group">
                   <label for="bank_account_name">Account Holder Name <span class="optional">(optional)</span></label>
-                  <input id="bank_account_name" name="bank_account_name" [(ngModel)]="form.bank_account_name" placeholder="Account holder name" />
+                  <input id="bank_account_name" name="bank_account_name" [(ngModel)]="form.bank_account_name" placeholder="Account holder name" autocomplete="off" />
                 </div>
                 <div class="form-group">
                   <label for="bank_account_number">Account Number <span class="optional">(optional)</span></label>
-                  <input id="bank_account_number" name="bank_account_number" [(ngModel)]="form.bank_account_number" placeholder="Bank account number" />
+                  <input id="bank_account_number" name="bank_account_number" [(ngModel)]="form.bank_account_number" placeholder="Bank account number" autocomplete="off" />
                 </div>
                 <div class="form-group">
                   <label for="bank_ifsc">IFSC Code <span class="optional">(optional)</span></label>
-                  <input id="bank_ifsc" name="bank_ifsc" [(ngModel)]="form.bank_ifsc" placeholder="HDFC0001234" />
+                  <input id="bank_ifsc" name="bank_ifsc" [(ngModel)]="form.bank_ifsc" placeholder="HDFC0001234" autocomplete="off" />
                 </div>
                 <div class="form-group">
                   <label for="bank_upi_id">UPI Payout ID <span class="optional">(optional)</span></label>
-                  <input id="bank_upi_id" name="bank_upi_id" [(ngModel)]="form.bank_upi_id" placeholder="hotel@upi" />
+                  <input id="bank_upi_id" name="bank_upi_id" [(ngModel)]="form.bank_upi_id" placeholder="hotel@upi" autocomplete="off" />
                 </div>
               </div>
 

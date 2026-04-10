@@ -63,13 +63,20 @@ export class PlatformSyncService implements OnDestroy {
   }
 
   private tryWebSocket(): void {
-    const token = localStorage.getItem('access_token') || '';
+    let token = '';
+    try {
+      // M-17: Service expects token in localStorage, but auth.service uses memory signal
+      // TODO: Align token storage strategy - consider using a token getter method from auth.service
+      token = localStorage.getItem('access_token') || '';
+    } catch {
+      // localStorage may not be available in SSR or private browsing mode
+    }
     const wsUrl = environment.apiUrl
       .replace('https://', 'wss://')
-      .replace('http://', 'ws://') + '/ws/events?token=' + encodeURIComponent(token);
+      .replace('http://', 'ws://') + '/ws/events';
 
     try {
-      this.ws = new WebSocket(wsUrl);
+      this.ws = new WebSocket(wsUrl, ['access_token', token]);
       this.ws.onopen = () => {
         this.connected.set(true);
         this.reconnectAttempts = 0;
@@ -80,7 +87,10 @@ export class PlatformSyncService implements OnDestroy {
           const data = JSON.parse(event.data) as PlatformEvent;
           this.events$.next(data);
           this.lastEvent.set(data);
-        } catch { /* ignore malformed */ }
+        } catch (e) {
+          // M-18: Log malformed WebSocket messages instead of silently ignoring
+          console.warn('Malformed WebSocket message:', e);
+        }
       };
       this.ws.onclose = () => {
         this.connected.set(false);
