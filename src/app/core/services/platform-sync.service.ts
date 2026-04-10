@@ -73,10 +73,10 @@ export class PlatformSyncService implements OnDestroy {
     }
     const wsUrl = environment.apiUrl
       .replace('https://', 'wss://')
-      .replace('http://', 'ws://') + '/ws/events';
+      .replace('http://', 'ws://') + '/ws/events?token=' + token;
 
     try {
-      this.ws = new WebSocket(wsUrl, ['access_token', token]);
+      this.ws = new WebSocket(wsUrl);
       this.ws.onopen = () => {
         this.connected.set(true);
         this.reconnectAttempts = 0;
