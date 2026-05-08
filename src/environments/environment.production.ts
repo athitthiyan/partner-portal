@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://hotel-api-production-447d.up.railway.app',
-  apiBaseUrl: 'https://hotel-api-production-447d.up.railway.app',
+  apiUrl: 'https://api.stayvora.co.in',
+  apiBaseUrl: 'https://api.stayvora.co.in',
   bookingAppUrl: 'https://stayvora.co.in',
-  partnerPortalUrl: 'https://stayease-partner-portal.vercel.app',
+  partnerPortalUrl: 'https://partner.stayvora.co.in',
   appName: 'Stayvora Partner Portal',
   sentryDsn: ''
 };
