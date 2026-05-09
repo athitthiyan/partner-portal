@@ -8,6 +8,6 @@ describe('Environment', () => {
 
   it('should have production true in prod', () => {
     expect(prodEnvironment.production).toBe(true);
-    expect(prodEnvironment.apiUrl).toBe('https://hotel-api-production-447d.up.railway.app');
+    expect(prodEnvironment.apiUrl).toBe('https://api.stayvora.co.in');
   });
 });
