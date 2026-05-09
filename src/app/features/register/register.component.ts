@@ -83,13 +83,17 @@ interface LeafletLike {
                 </div>
                 <div class="form-group">
                   <label for="password">Password</label>
-                  <div class="input-eye-wrap">
+                  <div class="input-password">
                     <input id="password" name="password" [(ngModel)]="form.password"
                       [type]="showPassword() ? 'text' : 'password'"
                       placeholder="Min 10 chars, uppercase + number" required />
-                    <button type="button" class="eye-toggle" (click)="showPassword.set(!showPassword())"
+                    <button type="button" class="toggle-pw" (click)="showPassword.set(!showPassword())"
                       [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
-                      {{ showPassword() ? '🙈' : '👁️' }}
+                      @if (showPassword()) {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      }
                     </button>
                   </div>
                   @if (form.password && form.password.length < 10) {
@@ -473,28 +477,30 @@ interface LeafletLike {
       box-shadow: 0 0 0 3px rgba(214,184,107,0.15);
     }
 
-    /* ── Password eye toggle ── */
-    .input-eye-wrap {
+    /* ── Password eye toggle (same pattern as customer app) ── */
+    .input-password {
       position: relative;
-      display: flex;
-      align-items: center;
     }
-    .input-eye-wrap input {
-      padding-right: 44px;
-    }
-    .eye-toggle {
+    .input-password input { padding-right: 46px; }
+
+    .toggle-pw {
       position: absolute;
       right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
       background: none;
       border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      font-size: 16px;
-      padding: 0;
-      line-height: 1;
+      padding: 4px;
+      width: auto;
       color: var(--sv-text-muted);
+      opacity: 0.6;
       transition: opacity 0.2s;
     }
-    .eye-toggle:hover { opacity: 0.8; }
+    .toggle-pw:hover { opacity: 1; }
 
     .field-hint {
       font-size: 12px;

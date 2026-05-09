@@ -383,4 +383,14 @@ describe('RegisterComponent', () => {
     expect(component.form.latitude).toBe(14);
     expect(component.form.longitude).toBe(81);
   });
+
+  it('toggles password visibility', () => {
+    const component = fixture.componentInstance;
+
+    expect(component.showPassword()).toBe(false);
+    component.showPassword.set(true);
+    expect(component.showPassword()).toBe(true);
+    component.showPassword.set(false);
+    expect(component.showPassword()).toBe(false);
+  });
 });

@@ -17,16 +17,20 @@ import { AuthService } from '../../core/services/auth.service';
 
         <form class="auth-form" (ngSubmit)="login()">
           <input type="email" name="email" [(ngModel)]="email" placeholder="reservations@yourhotel.com" [disabled]="loading()" required />
-          <div class="pw-wrap">
+          <div class="input-password">
             <input [type]="showPassword() ? 'text' : 'password'" name="password" [(ngModel)]="password"
               placeholder="Password" [disabled]="loading()" required />
-            <button type="button" class="pw-eye" (click)="showPassword.set(!showPassword())"
+            <button type="button" class="toggle-pw" (click)="showPassword.set(!showPassword())"
               [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
-              {{ showPassword() ? '🙈' : '👁️' }}
+              @if (showPassword()) {
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              }
             </button>
           </div>
           @if (error()) { <div class="auth-error">{{ error() }}</div> }
-          <button type="submit" [disabled]="loading()">{{ loading() ? 'Signing in...' : 'Continue to partner hub' }}</button>
+          <button type="submit" class="btn-submit" [disabled]="loading()">{{ loading() ? 'Signing in...' : 'Continue to partner hub' }}</button>
         </form>
 
         <a routerLink="/register" class="auth-link">Need an onboarding account? Register your hotel.</a>
@@ -79,43 +83,61 @@ import { AuthService } from '../../core/services/auth.service';
       margin: 24px 0 18px;
     }
 
-    .auth-form input,
-    .auth-form button {
+    .auth-form input {
       width: 100%;
       border-radius: 14px;
       padding: 14px 16px;
       border: 1px solid var(--sv-border);
       background: var(--sv-surface);
       color: var(--sv-text);
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .auth-form input:focus {
+      outline: none;
+      border-color: var(--sv-gold);
+      box-shadow: 0 0 0 3px rgba(214,184,107,0.15);
     }
 
-    .pw-wrap {
+    /* Password eye toggle — same pattern as customer app */
+    .input-password {
       position: relative;
-      display: flex;
-      align-items: center;
     }
-    .pw-wrap input {
-      padding-right: 46px;
-    }
-    .pw-eye {
+    .input-password input { padding-right: 46px; }
+
+    .toggle-pw {
       position: absolute;
-      right: 14px;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
       background: none;
       border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      font-size: 16px;
-      padding: 0;
-      color: var(--sv-text-muted);
+      padding: 4px;
       width: auto;
+      color: var(--sv-text-muted);
+      opacity: 0.6;
+      transition: opacity 0.2s;
     }
-    .pw-eye:hover { opacity: 0.75; }
+    .toggle-pw:hover { opacity: 1; }
 
-    .auth-form button {
+    .btn-submit {
+      width: 100%;
+      border-radius: 14px;
+      padding: 14px 16px;
       background: var(--sv-gradient-gold);
       color: #111827;
       font-weight: 700;
+      font-size: 14px;
       border: none;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
     }
+    .btn-submit:hover:not(:disabled) { box-shadow: 0 4px 20px rgba(214,184,107,0.3); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .auth-error {
       padding: 12px 14px;

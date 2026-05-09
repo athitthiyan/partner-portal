@@ -120,4 +120,12 @@ describe('LoginComponent', () => {
 
     expect(fixture.componentInstance.error()).toBe('Unable to sign in right now.');
   });
+
+  it('toggles password visibility', () => {
+    expect(fixture.componentInstance.showPassword()).toBe(false);
+    fixture.componentInstance.showPassword.set(true);
+    expect(fixture.componentInstance.showPassword()).toBe(true);
+    fixture.componentInstance.showPassword.set(false);
+    expect(fixture.componentInstance.showPassword()).toBe(false);
+  });
 });
