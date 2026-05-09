@@ -48,22 +48,22 @@ type PartnerRoomType = PartnerRoom['room_type'];
           </label>
 
           <label>
-            Base price
+            💰 Base price
             <input name="price" type="number" min="1" [(ngModel)]="draft.price" required />
           </label>
 
           <label>
-            Weekend price
+            📅 Weekend price
             <input name="weekend_price" type="number" min="1" [(ngModel)]="draft.weekend_price" />
           </label>
 
           <label>
-            Holiday price
+            🎉 Holiday price
             <input name="holiday_price" type="number" min="1" [(ngModel)]="draft.holiday_price" />
           </label>
 
           <label>
-            Extra guest charge
+            👥 Extra guest charge
             <input name="extra_guest_charge" type="number" min="0" [(ngModel)]="draft.extra_guest_charge" />
           </label>
 

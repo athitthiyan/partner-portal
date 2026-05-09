@@ -17,7 +17,14 @@ import { AuthService } from '../../core/services/auth.service';
 
         <form class="auth-form" (ngSubmit)="login()">
           <input type="email" name="email" [(ngModel)]="email" placeholder="reservations@yourhotel.com" [disabled]="loading()" required />
-          <input type="password" name="password" [(ngModel)]="password" placeholder="Password" [disabled]="loading()" required />
+          <div class="pw-wrap">
+            <input [type]="showPassword() ? 'text' : 'password'" name="password" [(ngModel)]="password"
+              placeholder="Password" [disabled]="loading()" required />
+            <button type="button" class="pw-eye" (click)="showPassword.set(!showPassword())"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
+              {{ showPassword() ? '🙈' : '👁️' }}
+            </button>
+          </div>
           @if (error()) { <div class="auth-error">{{ error() }}</div> }
           <button type="submit" [disabled]="loading()">{{ loading() ? 'Signing in...' : 'Continue to partner hub' }}</button>
         </form>
@@ -82,6 +89,27 @@ import { AuthService } from '../../core/services/auth.service';
       color: var(--sv-text);
     }
 
+    .pw-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .pw-wrap input {
+      padding-right: 46px;
+    }
+    .pw-eye {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+      color: var(--sv-text-muted);
+      width: auto;
+    }
+    .pw-eye:hover { opacity: 0.75; }
+
     .auth-form button {
       background: var(--sv-gradient-gold);
       color: #111827;
@@ -106,6 +134,7 @@ export class LoginComponent {
   password = '';
   loading = signal(false);
   error = signal('');
+  showPassword = signal(false);
 
   login() {
     if (!this.email || !this.password) {

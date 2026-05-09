@@ -83,7 +83,18 @@ interface LeafletLike {
                 </div>
                 <div class="form-group">
                   <label for="password">Password</label>
-                  <input id="password" name="password" [(ngModel)]="form.password" type="password" placeholder="Min 10 chars, uppercase + number" required />
+                  <div class="input-eye-wrap">
+                    <input id="password" name="password" [(ngModel)]="form.password"
+                      [type]="showPassword() ? 'text' : 'password'"
+                      placeholder="Min 10 chars, uppercase + number" required />
+                    <button type="button" class="eye-toggle" (click)="showPassword.set(!showPassword())"
+                      [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
+                      {{ showPassword() ? '🙈' : '👁️' }}
+                    </button>
+                  </div>
+                  @if (form.password && form.password.length < 10) {
+                    <span class="field-hint field-hint--error">Password must be at least 10 characters</span>
+                  }
                 </div>
                 <div class="form-group">
                   <label for="legal_name">Legal Business Name</label>
@@ -462,6 +473,37 @@ interface LeafletLike {
       box-shadow: 0 0 0 3px rgba(214,184,107,0.15);
     }
 
+    /* ── Password eye toggle ── */
+    .input-eye-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-eye-wrap input {
+      padding-right: 44px;
+    }
+    .eye-toggle {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+      line-height: 1;
+      color: var(--sv-text-muted);
+      transition: opacity 0.2s;
+    }
+    .eye-toggle:hover { opacity: 0.8; }
+
+    .field-hint {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .field-hint--error {
+      color: #fca5a5;
+    }
+
     /* ── Buttons ── */
     .btn {
       display: inline-flex;
@@ -696,6 +738,7 @@ export class RegisterComponent implements AfterViewChecked {
   geocoding = signal(false);
   geocodeError = signal('');
   locationValidated = signal(false);
+  showPassword = signal(false);
 
   @ViewChild('locationMap') locationMapEl?: ElementRef<HTMLDivElement>;
 
@@ -801,7 +844,7 @@ export class RegisterComponent implements AfterViewChecked {
     return !!(
       this.form['full_name'] &&
       this.form['email'] &&
-      this.form['password'] &&
+      this.form['password'] && this.form['password'].length >= 10 &&
       this.form['legal_name'] &&
       this.form['display_name'] &&
       this.form['support_email']
